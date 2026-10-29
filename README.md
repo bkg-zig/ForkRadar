@@ -80,16 +80,21 @@ Prüfe vor einem Commit oder Push tatsächlichen Status und Diff. Führe keine H
 
 Ermittle zunächst den tatsächlichen Projekt- und Serverzustand. Erhalte vorhandene Frameworks, Komponenten, Datenbanken, Authentifizierung, Build- und Deploy-Wege. Ersetze keine funktionierende Architektur bloß aus Gewohnheit.
 
-Für ein neues Projekt ohne vorhandene Architektur gilt als Ausgangspunkt: Lies zuerst die im Workspace vorhandenen BKG-Framework- und Layer-Regeln. Wenn das Projekt den BKG-Zig-Stack nutzt, halte dessen festgelegte Layer-Reihenfolge und Native-Zig-Grenzen ein; führe keine zusätzliche Node-/TypeScript-/Python-Schicht ein, sofern die Projektregeln sie ausschließen.
+Für ForkRadar ist der bevorzugte BKG-Stack **Rust + Dioxus + Axum**. Prüfe zuerst den tatsächlich vorhandenen Workspace und seine verbindlichen Regeln. Wenn das konkrete Repository ausdrücklich einem anderen, zwingenden BKG-Framework-Vertrag unterliegt, halte diesen Konflikt fest und ändere den Stack nicht stillschweigend. Allein die Zugehörigkeit zu BKG ist kein Grund, React/Node.js oder eine andere Architektur vorauszusetzen.
 
-- **Frontend:** der vom bestehenden BKG-Framework unterstützte Web-Stack. React + TypeScript nur dann verwenden, wenn weder bestehende Projektregeln noch der vorhandene BKG-Stack einen anderen Weg festlegen.
-- **Backend:** vorhandener BKG-Backend-Stack; in einem neuen, noch nicht festgelegten Projekt bevorzugt den bereits im Workspace etablierten nativen BKG-Stack, andernfalls Rust/Axum.
-- **Persistenz:** vorhandene produktive Datenbank; bei Neuanlage PostgreSQL für transaktionale Daten und langlebige Jobs. SQLite ist nur geeignet, wenn Deployment und Parallelität nachweislich dazu passen.
-- **Authentifizierung:** echter GitHub-OAuth-Flow mit serverseitiger Session und Autorisierung. BKG-NIM ist kein Authentifizierungsanbieter.
-- **Fork-Graph:** D3.js oder Cytoscape.js, vorhandene passende Abhängigkeiten zuerst prüfen.
-- **Tabellen:** serverseitiges Filtern und Pagination, bei großen Datenmengen Virtualisierung.
+- **Frontend:** Dioxus mit Rust, als Webanwendung für Browser über WebAssembly. Verwende bei einem neuen Projekt die stabile Dioxus-0.7.x-Linie; Dioxus 0.8 Alpha ist kein Produktionsstandard. Übernimm eine bereits festgelegte Projektversion, wenn sie nachweislich funktioniert und zum bestehenden Workspace gehört.
+- **Backend:** Rust mit Axum für REST-Endpunkte, OAuth-Callbacks, serverseitige Autorisierung, Scan-Jobs und Status-Streaming. Nutze vorhandene BKG-Dienste statt parallele Infrastruktur ohne Bedarf aufzubauen.
+- **Gemeinsame Typen:** teile Domain-Modelle und API-Verträge in Rust-Crates, wo sinnvoll, statt dieselben Datenstrukturen in mehreren Sprachen manuell zu pflegen.
+- **Persistenz:** nutze zuerst die vorhandene produktive BKG-Datenbank. Falls keine geeignet ist, wähle einen für transaktionale Daten und langlebige Jobs geeigneten Speicher; PostgreSQL ist bei gemeinsam genutzter, paralleler Worker-Verarbeitung der Ausgangspunkt. SQLite ist nur zulässig, wenn Deployment, Sperrverhalten, Backup und Schreibparallelität nachweislich passen.
+- **Authentifizierung:** echter GitHub-OAuth-Flow im Axum-Backend mit serverseitiger Session und Autorisierung. Dioxus-Frontend-Guards allein sind kein Schutz. BKG-NIM ist kein Authentifizierungsanbieter.
+- **Fork-Graph:** bevorzuge Cytoscape.js oder D3.js für die eigentliche Graph-Engine und integriere diese gezielt über eine kleine, gekapselte JavaScript/WASM-Interop-Grenze. Die restliche Anwendung bleibt Dioxus; baue keine parallele React-App nur für den Graphen.
+- **Tabellen:** Dioxus-Komponenten mit serverseitigem Filtern, Sortieren und Pagination; Virtualisierung bei großen Datenmengen.
 - **Analyse:** deterministische GitHub-Abfragen und sprachspezifische Analyseadapter; fremder Repository-Code wird nicht unkontrolliert ausgeführt.
-- **Betrieb:** vorhandenes BKG-Deployment und vorhandene CI/CD nutzen. Hostnamen, Services und Infrastruktur nicht erfinden.
+- **Betrieb:** vorhandenes BKG-Deployment und CI/CD nutzen. Erfinde keine Hostnamen, Services oder Infrastruktur.
+
+Falls noch kein Projektgerüst besteht, verwende eine nachvollziehbare Rust-Workspace-Struktur, beispielsweise `apps/forkradar-web` für Dioxus/WebAssembly, `apps/forkradar-api` für Axum sowie getrennte Crates für Domain-Modelle, GitHub-Client, Persistenz, statische Analyse und den NIM-Adapter. Passe Namen und Aufteilung an den realen BKG-Workspace an, statt bestehende Strukturen blind zu ersetzen. Halte serverseitige Crates und Geheimnisse vollständig aus dem WASM-Frontend heraus. Gemeinsame Crates dürfen nur browserkompatible Abhängigkeiten verwenden, wenn sie vom Web-Frontend eingebunden werden.
+
+Für den Graphen bleibt D3.js/Cytoscape.js eine eng begrenzte Interop-Komponente: Initialisierung, Aktualisierung und Aufräumen der Graph-Instanz müssen an die Dioxus-Komponentenlebensdauer gebunden sein. Graph-Daten stammen aus dem echten Backend; Graph-Interop darf keine Scan-Ergebnisse oder Statuswerte simulieren.
 
 Keine Google-spezifischen Dienste oder Abhängigkeiten einführen. Insbesondere keine Google-AI-Studio-Build-Laufzeit, keine Gemini-Anbindung, keine Firebase-Authentifizierung, keine Firestore-Datenbank und kein Google-Cloud-Run-Deployment. BKG-NIM ist ausdrücklich die vorgesehene interne LLM-Anbindung. Verwende stattdessen den bestehenden BKG-Backend-, Datenbank- und Deployment-Stack.
 
@@ -127,7 +132,7 @@ Fehlende GitHub-OAuth-Credentials, NIM-Zugangsdaten, Datenbankverbindungen, Work
 
 Priorisiere zuerst diese Ende-zu-Ende-Kette:
 
-1. React-Oberfläche im BKG-Designsystem.
+1. Dioxus-Weboberfläche im BKG-Designsystem.
 2. Echte, konfigurierbare GitHub-Authentifizierung; kein automatisches Authentifizieren.
 3. Main-Repository serverseitig validieren und dauerhaft speichern.
 4. Authentifizierte Serverabfrage an GitHub.
@@ -402,7 +407,7 @@ Soweit für Sprache, Repository und verfügbare Runtime sinnvoll:
 Wähle die Tools nach tatsächlichen Dateien und unterstützter Umgebung. Beispiele:
 
 - Rust: Clippy, rustfmt, cargo-audit, cargo-deny
-- JavaScript/TypeScript: ESLint, TypeScript Compiler und geeignete Complexity-Analyzer
+- JavaScript/TypeScript in analysierten Ziel-Repositories: ESLint, TypeScript Compiler und geeignete Complexity-Analyzer. Diese Tools dienen der Repository-Analyse und sind kein Grund, ForkRadar selbst in React/TypeScript zu schreiben.
 - Python: Ruff, Radon, Bandit
 - Go: `go vet`, Staticcheck
 - Java: Checkstyle, PMD, SpotBugs
@@ -767,15 +772,17 @@ Teste OAuth-Callback und Fehlpfade, Session-Ablauf, Logout, unauthentifizierte Z
 
 Teste, dass nur tatsächlich verfügbare Werkzeuge als ausgeführt gelten, Metriken reproduzierbar sind, fehlende Tools korrekt ausgewiesen werden, Scores deterministisch sind, Findings dedupliziert werden und bestätigte Advisories von Verdachtsfällen getrennt sind. Prüfe Secret-Handling und nicht verfügbare Datenquellen.
 
-### Frontend und Exporte
+### Dioxus-Frontend und Exporte
 
-Teste Graph-Navigation, Zoom/Pan, Filter, Sortierung, persistierte Ansichten, CSV-/XLSX-Export sowie Lade-, Fehler- und Leerzustände.
+Prüfe den tatsächlichen Dioxus-Web-Build und die Browser-Einstiegspunkte. Teste Graph-Navigation, Zoom/Pan über die gekapselte Graph-Interop, Filter, Sortierung, persistierte Ansichten, CSV-/XLSX-Export sowie Lade-, Fehler- und Leerzustände. Prüfe außerdem, dass API-Schlüssel und OAuth-Secrets nicht in den WASM-/Frontend-Build gelangen. Führe nur die im Repository tatsächlich verfügbaren Build- und Test-Kommandos aus.
 
 ### Produktionsfreigabe
 
 Vor einem produktiven Release überprüfe, soweit tatsächlich verfügbar:
 
-- Tests, Typecheck, Lint und Build
+- `cargo fmt --check`, sofern im Workspace verwendbar
+- `cargo clippy` und `cargo test` für die relevanten Workspace-Crates, mit den tatsächlich gültigen Projektoptionen
+- `dx build --platform web`, sofern Dioxus CLI und der konfigurierte Web-Target verfügbar sind
 - Paketierung und Deployment-Konfiguration
 - Authentifizierung, Zugriffsschutz, Datenbankregeln und serverseitige Autorisierung
 - Secrets und Protokollierung
@@ -810,8 +817,10 @@ Die Anwendung darf eine Funktion nur dann als fertig bezeichnen, wenn der jeweil
 18. Zeitplanung wird nur als aktiv angezeigt, wenn sie eingerichtet und verifiziert ist.
 19. Secrets bleiben serverseitig geschützt.
 20. BKG-Design- und Engineering-Regeln sind eingehalten.
-21. Tests, Typecheck, Lint und Build sind tatsächlich geprüft oder ehrlich als nicht verfügbar ausgewiesen.
-22. Code, Dokumentation und Konfiguration entsprechen demselben realen Stand.
+21. ForkRadar verwendet gemäß diesem Architekturentscheid Rust + Dioxus im Web-Frontend und Rust + Axum im Backend, sofern keine nachweislich zwingende Regel des bestehenden Repositories entgegensteht.
+22. Der Dioxus-Web-Build funktioniert mit der tatsächlich festgelegten stabilen Version; Graph-Interop ist gekapselt und getestet.
+23. Tests, Rust-Formatierung/Linting und Build sind tatsächlich geprüft oder ehrlich als nicht verfügbar ausgewiesen.
+24. Code, Dokumentation und Konfiguration entsprechen demselben realen Stand.
 
 ---
 
@@ -820,8 +829,8 @@ Die Anwendung darf eine Funktion nur dann als fertig bezeichnen, wenn der jeweil
 Nutze die Reihenfolge als Priorisierung, nicht als Ausrede, spätere Anforderungen zu vergessen:
 
 1. Projektbestand, vorhandene Regeln und Architektur prüfen.
-2. React-Shell, Navigation, Tokens und Zustände gestalten.
-3. Datenmodell, echte GitHub-Authentifizierung und serverseitige Autorisierung umsetzen.
+2. Rust-Workspace und Dioxus-Web-Shell entsprechend dem tatsächlichen Projektzustand einrichten; Navigation, BKG-Design-Tokens und typisierte UI-Zustände gestalten.
+3. Axum-API, Datenmodell, echte GitHub-Authentifizierung und serverseitige Autorisierung umsetzen.
 4. Repository-Validierung und persistentes Speichern eines Main-Repositorys.
 5. Recursive Discovery mit Pagination, Queue, Checkpoints und Resume implementieren und testen.
 6. Echte Daten im Fork-Graph und Update Explorer anzeigen.
@@ -829,7 +838,7 @@ Nutze die Reihenfolge als Priorisierung, nicht als Ausrede, spätere Anforderung
 8. Code-Quality-Adapter und nachvollziehbare Scores ergänzen.
 9. Security-Advisory-Quellen und verifizierbare Findings integrieren.
 10. Dashboard, Watchlists, Scan-Profile, Historie und Benachrichtigungen fertigstellen.
-11. Security Rules, Konfiguration, Dokumentation und verfügbare End-to-End-Tests überprüfen.
+11. Datenbank-Constraints/Policies, serverseitige Autorisierung, Konfiguration, Dokumentation und verfügbare End-to-End-Tests überprüfen.
 
 Passe die Reihenfolge nur an, wenn eine nachgewiesene Abhängigkeit dies erfordert. Dokumentiere die Entscheidung.
 
