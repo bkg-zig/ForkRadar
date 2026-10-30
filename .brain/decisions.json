@@ -87,6 +87,19 @@
       ],
       "rejectedBecause": "Ein Goal ohne verfügbaren Toolchain und ohne belastbare Architekturgrundlage würde Planung als Fortschritt darstellen.",
       "status": "decided"
+    },
+    {
+      "id": "FR-D-008",
+      "date": "2026-10-30",
+      "title": "Brain-JSON nur mit vollständigem last-Array und seriell schreiben",
+      "decision": "Die Brain-JSON-Dateien werden ausschließlich mit dem vollständigen last-Array geschrieben, und Aufrufe auf dieselbe Datei laufen nacheinander, nie parallel.",
+      "rationale": "Ein Aufruf mit einem einzelnen Objekt als value ersetzt den gesamten Dateiinhalt durch last=<Objekt>. Zwei parallele Aufrufe auf dieselbe Datei haben memory.json mit zwei aneinandergesetzten Objekten und NUL-Bytes beschädigt und die zuvor vorhandenen Records verdrängt.",
+      "alternatives": [
+        "value als einzelnes Objekt übergeben",
+        "mehrere append-Aufrufe parallel absetzen"
+      ],
+      "rejectedBecause": "Beide Varianten haben Dateien messbar beschädigt. Der Wiederaufbau stammt aus HEAD plus den zwischenzeitlichen Einzelobjekten.",
+      "status": "decided"
     }
   ]
 }

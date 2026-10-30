@@ -13,6 +13,9 @@ Cargo.lock.orig
 .env.*
 !.env.example
 
+# Local sync client configuration of this machine
+/.colabsync
+
 # Local database and runtime data
 /data
 *.sqlite

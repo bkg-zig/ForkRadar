@@ -34,6 +34,20 @@
       "topic": "BKG-Werkzeuge",
       "content": "bkg-supervisor-team meldet im Projekt keine Agenten, Skills, Tools, Regeln und config null. Es gibt kein BKG-Goal und keinen BKG-Plan. .brain/teams.json enthält ein geplantes Team mit vier Agenten im Status planned und ohne Skills.",
       "status": "settled"
+    },
+    {
+      "id": "FR-M-006",
+      "date": "2026-10-30",
+      "topic": "Fork-Netzwerk",
+      "content": "Am 2026-10-30 wurden zwei Fork-Netzwerke unauthentifiziert über api.github.com erfasst. chmln/sd (id 162863623, 12 Releases, Tiefe 2, 223 Listing-Kinder) und Semmle/SecurityExploits (id 137218373, archiviert, 0 Releases, Tiefe 2, 54 Listing-Kinder). Beide Läufe melden PARTIAL wegen nicht mehr auflösbarer Listing-Einträge. Artefakte: docs/fork-network-capture.md und docs/evidence/fork-network/.",
+      "status": "settled"
+    },
+    {
+      "id": "FR-M-007",
+      "date": "2026-10-30",
+      "topic": "GitHub-API",
+      "content": "Das GitHub-Fork-Listing liefert parent und source nicht. Ohne Detailaufruf GET /repos/{owner}/{name} kann die Pipeline keine GITHUB_REPORTED_PARENT- oder FORK_NETWORK_MEMBER-Kante bilden. Zusätzlich kann das Listing gelöschte Repositories enthalten, die auf GET /repos/{full} mit 404 antworten.",
+      "status": "settled"
     }
   ]
 }

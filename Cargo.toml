@@ -7,6 +7,7 @@ members = [
     "crates/forkradar-discovery",
     "crates/forkradar-nim",
     "crates/forkradar-analysis",
+    "crates/forkradar-export",
     "apps/forkradar-api",
     "apps/forkradar-web",
 ]
@@ -17,6 +18,7 @@ default-members = [
     "crates/forkradar-discovery",
     "crates/forkradar-nim",
     "crates/forkradar-analysis",
+    "crates/forkradar-export",
     "apps/forkradar-api",
 ]
 
@@ -33,6 +35,7 @@ forkradar-store = { path = "crates/forkradar-store" }
 forkradar-discovery = { path = "crates/forkradar-discovery" }
 forkradar-nim = { path = "crates/forkradar-nim" }
 forkradar-analysis = { path = "crates/forkradar-analysis" }
+forkradar-export = { path = "crates/forkradar-export" }
 
 anyhow = "1"
 thiserror = "2"

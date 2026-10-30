@@ -1361,6 +1361,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "forkradar-export"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "forkradar-domain",
+ "uuid",
+]
+
+[[package]]
 name = "forkradar-github"
 version = "0.1.0"
 dependencies = [
@@ -1413,11 +1422,13 @@ version = "0.1.0"
 dependencies = [
  "dioxus",
  "forkradar-domain",
+ "forkradar-export",
  "gloo-net",
  "gloo-timers",
  "js-sys",
  "serde",
  "serde_json",
+ "uuid",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",

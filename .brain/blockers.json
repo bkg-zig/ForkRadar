@@ -47,6 +47,22 @@
       "summary": "Git verweigert Operationen wegen abweichender Eigentümer-UID.",
       "evidence": "Repository-Dateien gehören UID 1000, die Shell läuft als root. git rev-parse ohne Zusatz endet mit fatal: detected dubious ownership in repository.",
       "escalation": "Eigentümerentscheidung. Das Audit nutzte den Zusatz -c safe.directory ohne Konfigurationsänderung."
+    },
+    {
+      "id": "FR-B-007",
+      "task": "FR-015, FR-011",
+      "severity": "blocking",
+      "summary": "dx build --platform web schlaegt fehl, damit ist das Web-Build-Gate aus README Abschnitt 19 nicht erfuellt.",
+      "evidence": "Revision 3cfa99f mit dx 0.7.10, wasm-bindgen 0.2.129 (~/.local/share/.dx/tools), rustc 1.99.1. Aus apps/forkradar-web: Panic bei dioxus-cli-0.7.10/src/workspace.rs:325, std::fs::canonicalize(default).unwrap() auf die relativen default_members des Root-Workspace. Aus dem Workspace-Root mit --package forkradar-web: wasm-Build 176/176 erfolgreich, dann 'wasm-bindgen error: failed to find intrinsics to enable clone_ref function' und 'dx build: Failed to write executable: No such file or directory (os error 2)'.",
+      "escalation": "Toolchain-Eigentuemer (FR-010). Vermutete Klasse: wasm-bindgen 0.2.129 (Binary vom 2025-09-25) passt nicht zu rustc 1.99.1 (2026-10-13). ERFORDERT ANALYSE."
+    },
+    {
+      "id": "FR-B-008",
+      "task": "FR-CAP-001",
+      "severity": "non-blocking",
+      "summary": "bkg-brain-team append ersetzt die ganze Datei und erwartet das vollständige last-Array. Aufrufe mit einem einzelnen Objekt und parallele Aufrufe auf dieselbe Datei beschädigen die Brain-Dateien.",
+      "evidence": "Ein Aufruf mit value={...} schrieb {\"last\": {...}}. Zwei parallele Aufrufe erzeugten in .brain/memory.json zwei aneinandergesetzte Objekte mit NUL-Bytes. .brain/tasks.json und .brain/blockers.json standen zeitweise nur mit dem zuletzt geschriebenen Einzelobjekt (FR-WEB-001 bzw. FR-B-007) da. Wiederhergestellt aus HEAD plus den zwischenzeitlichen Einzelobjekten.",
+      "escalation": "Alle Agenten. Korrekte Nutzung: value ist das vollständige last-Array, Aufrufe je Datei nacheinander. Entscheidung FR-D-008."
     }
   ]
 }

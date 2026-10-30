@@ -1,0 +1,20 @@
+{
+  "last": [
+    {
+      "id": "FR-R-001",
+      "date": "2026-10-30",
+      "topic": "Gemessenes Verhalten der GitHub-Fork-API",
+      "agent": "Fork Graph Researcher",
+      "findings": [
+        "GET /repos/{o}/{r}/forks trägt weder parent noch source. Geprüft über 8 Listing-Antworten und 281 Einträge, kein einziger Eintrag hatte die Schlüssel. Deshalb liefert GitHubClient::list_forks immer parent=None und source=None.",
+        "Die Anzahl der Listing-Einträge weicht von forks_count ab: chmln/sd 223 vs 175, Semmle/SecurityExploits 54 vs 50.",
+        "Listing-Einträge können auf gelöschte Repositories zeigen. Je Netzwerk 2 von chmln/sd bzw. Semmle/SecurityExploits; GET /repos/{full} liefert HTTP 404.",
+        "Knoten der Tiefe 2 fehlen im Listing der Wurzel. Vier belegte Ketten: chmln/sd -> VonRosenchild/sd -> HubBucket-Team/sd und drei Ketten unter Semmle/SecurityExploits.",
+        "GET /repos/{base}/compare/{base}...{head} liefert HTTP 404, wenn der Kopf nicht auflösbar ist.",
+        "Ein Fork kann umbenannt sein: pepa65/esed stammt von chmln/sd ab (parent chmln/sd)."
+      ],
+      "evidence": "docs/fork-network-capture.md und docs/evidence/fork-network/capture-2026-10-30.json",
+      "status": "settled"
+    }
+  ]
+}

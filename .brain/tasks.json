@@ -411,6 +411,86 @@
       "nextSteps": [
         "Regeln für den Umgang mit Quelltextdaten im Adapter festlegen"
       ]
+    },
+    {
+      "id": "FR-WEB-001",
+      "title": "Dioxus-Web-Frontend mit Navigation, Ranking, Export und Vorlesefunktion",
+      "owner": "Mody (Agent opencode, Minimax M3.1 Flash)",
+      "model": "minimaxai/minimax-m3.1-flash",
+      "provider": "nim",
+      "tools": [
+        "shell",
+        "write",
+        "read",
+        "grep",
+        "edit"
+      ],
+      "skills": [
+        "bkg-brain-memory"
+      ],
+      "scope": "apps/forkradar-web: App-Shell mit Hash-Navigation ueber 11 Bereiche, New Features & Ranking mit Mehrkriterien-Ranking, Stimmen, Statuspflege, 30-Tage-Audit, CSV/XLSX-Export, deutsche Browser-Vorlesefunktion, D3-Graph-Interop.",
+      "startedAt": "2026-10-30T12:00Z",
+      "status": "in_progress",
+      "changedFiles": [],
+      "commandsRun": [],
+      "verification": [],
+      "blockers": [
+        "dx build --platform web ist ohne wasm-bindgen-cli und ohne crates.io-Zugriff blockiert; Status wird als NOT_RUN ausgewiesen."
+      ],
+      "nextSteps": [
+        "src/ vervollstaendigen: browser.rs, components.rs, speech.rs, views/, lib.rs, main.rs",
+        "public/main.css, public/d3.v7.min.js, public/graph.js bereitstellen, index.html auf lang=de umstellen",
+        "Cargo.toml um forkradar-export, uuid-js und web-sys-Speech-Features erweitern, Dioxus.toml-Proxy auf Port 3000 korrigieren",
+        "cargo fmt, cargo clippy, cargo check --target wasm32-unknown-unknown, cargo test ausfuehren"
+      ]
+    },
+    {
+      "id": "FR-CAP-001",
+      "title": "Rekursive Erfassung zweier Fork-Netzwerke über die autorisierte GitHub-REST-API",
+      "owner": "Fork Graph Researcher (Agent forkgraph-researcher, Team ForkRadar Agent Team)",
+      "model": "deepseek-ai/deepseek-v4.1-flash",
+      "provider": "nim",
+      "tools": [
+        "shell",
+        "write",
+        "read",
+        "grep",
+        "edit"
+      ],
+      "skills": [
+        "bkg-brain-memory"
+      ],
+      "scope": "Read-only Erfassung über https://api.github.com. Ziele chmln/sd (id 162863623) und Semmle/SecurityExploits (id 137218373). Keine Schreibzugriffe auf GitHub.",
+      "startedAt": "2026-10-30T00:35Z",
+      "status": "completed",
+      "completedAt": "2026-10-30T04:10Z",
+      "changedFiles": [
+        "docs/fork-network-capture.md",
+        "docs/evidence/fork-network/README.md",
+        "docs/evidence/fork-network/harvest.py",
+        "docs/evidence/fork-network/capture-2026-10-30.json",
+        "docs/README.md"
+      ],
+      "commandsRun": [
+        "GET /repos/chmln/sd, /repos/Semmle/SecurityExploits und deren releases, commits, forks-Seiten",
+        "GET /repos/{owner}/{repo}/compare/master...{fork}:master je Stichprobenfork",
+        "python3 docs/evidence/fork-network/harvest.py --out ... --target chmln/sd --target Semmle/SecurityExploits --sample-size 6 --compare-size 6",
+        "python3 -m py_compile docs/evidence/fork-network/harvest.py"
+      ],
+      "verification": [
+        "chmln/sd: 223 disjunkte direkte Kinder über 3 Listingsseiten, Tiefe 2 über VonRosenchild/sd -> HubBucket-Team/sd, 12 Releases, 100 Commits der neuesten Seite, 4 Upstream-Vergleiche.",
+        "Semmle/SecurityExploits: 54 disjunkte direkte Kinder über 1 Seite, Tiefe 2 über drei Ketten (Mshaffar, ProjectZeroDays, hohjgdhsj), 0 Releases, 58 Commits, 4 Upstream-Vergleiche.",
+        "Depth-2-Knoten fehlen im Listing der Wurzel und sind nur über das Listing des Parents erreichbar.",
+        "Je Netzwerk 2 Listing-Einträge ohne auflösbares Repository (HTTP 404 auf GET /repos/{full}); Laufstatus deshalb PARTIAL.",
+        "Der eingecheckte Harness reproduziert dieselben Zahlen aus denselben Rohdaten, py_compile ohne Fehler."
+      ],
+      "blockers": [
+        "FR-B-008"
+      ],
+      "nextSteps": [
+        "Knoten-Lebendigkeit speichern, damit 404-Einträge nicht als aktive Forks erscheinen.",
+        "GITHUB_REPORTED_PARENT und FORK_NETWORK_MEMBER bedingen einen Detailaufruf je Knoten."
+      ]
     }
   ]
 }
