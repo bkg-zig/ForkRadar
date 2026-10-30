@@ -369,7 +369,7 @@ fn sort_records(records: &mut [FeatureSuggestionRecord], sort: FeatureSort) {
                 .unwrap_or(std::cmp::Ordering::Equal)
                 .then_with(|| b.created_at.cmp(&a.created_at))
         }),
-        FeatureSort::Newest => records.sort_by(|a, b| b.created_at.cmp(&a.created_at)),
+        FeatureSort::Newest => records.sort_by_key(|a| std::cmp::Reverse(a.created_at)),
     }
 }
 

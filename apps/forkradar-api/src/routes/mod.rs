@@ -34,6 +34,14 @@ pub fn api_router() -> Router<AppState> {
         .route("/api/scans/{id}/graph", get(scans::graph))
         .route("/api/scans/{id}/resume", post(scans::resume))
         .route("/api/scans/{id}/cancel", post(scans::cancel))
+        .route("/api/features", get(features::list).post(features::create))
+        .route("/api/features/audit", get(features::audit))
+        .route("/api/features/{id}", get(features::detail))
+        .route(
+            "/api/features/{id}/vote",
+            post(features::vote).delete(features::withdraw_vote),
+        )
+        .route("/api/features/{id}/status", put(features::update_status))
 }
 
 /// Builds the routes of the GitHub login.

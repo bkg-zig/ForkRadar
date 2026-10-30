@@ -27,7 +27,7 @@ pub async fn detect_tools() -> ToolInventory {
     let known = known_tools();
     let mut tools = Vec::with_capacity(known.len());
     for (id, name, language, executable) in known {
-        let path = find_on_path(&executable);
+        let path = find_on_path(executable);
         let version = match &path {
             Some(path) => probe_version(path).await,
             None => None,
