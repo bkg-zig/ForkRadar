@@ -978,11 +978,9 @@ ForkRadar/
 │   │   │   │   ├── test-lib-forkradar_analysis
 │   │   │   │   └── test-lib-forkradar_analysis.json  [config]
 │   │   │   ├── forkradar-analysis-66a57d97287293c1/
-│   │   │   │   ├── invoked.timestamp
-│   │   │   │   └── output-lib-forkradar_analysis
+│   │   │   │   └── invoked.timestamp
 │   │   │   ├── forkradar-analysis-6a1aab8d1dda5079/
-│   │   │   │   ├── invoked.timestamp
-│   │   │   │   └── output-test-lib-forkradar_analysis
+│   │   │   │   └── invoked.timestamp
 │   │   │   ├── forkradar-analysis-6d8a151acbd9ff31/
 │   │   │   │   ├── dep-test-lib-forkradar_analysis
 │   │   │   │   ├── invoked.timestamp
@@ -1262,11 +1260,9 @@ ForkRadar/
 │   │   │   │   ├── lib-forkradar_store
 │   │   │   │   └── lib-forkradar_store.json  [config]
 │   │   │   ├── forkradar-store-d2cf4f5da5bf94b8/
-│   │   │   │   ├── invoked.timestamp
-│   │   │   │   └── output-lib-forkradar_store
+│   │   │   │   └── invoked.timestamp
 │   │   │   ├── forkradar-store-db47b2f53aba178f/
-│   │   │   │   ├── invoked.timestamp
-│   │   │   │   └── output-test-lib-forkradar_store
+│   │   │   │   └── invoked.timestamp
 │   │   │   ├── form_urlencoded-74f9d347945b8977/
 │   │   │   │   ├── dep-lib-form_urlencoded
 │   │   │   │   ├── invoked.timestamp
@@ -4322,8 +4318,8 @@ ForkRadar/
 │   │   │       ├── build_script_build-946061105b7cdaa0.d
 │   │   │       └── build-script-build
 │   │   ├── deps/
-│   │   │   ├── rmetaBqYnag/
-│   │   │   ├── rmetawb355N/
+│   │   │   ├── rmetaYAukZv/
+│   │   │   │   └── full.rmeta
 │   │   │   ├── aead-89998abd2e6f0314.d
 │   │   │   ├── aead-c7d46ff66af17dbc.d
 │   │   │   ├── aes_gcm-069b954687a4dc73.d
@@ -4750,6 +4746,7 @@ ForkRadar/
 │   │   │   ├── libcfg_if-9226804a390bb96a.rlib
 │   │   │   ├── libcfg_if-9226804a390bb96a.rmeta
 │   │   │   ├── libchrono-3f66bad3291fbfbc.rmeta
+│   │   │   ├── libchrono-7041f7729092095d.rlib
 │   │   │   ├── libchrono-7041f7729092095d.rmeta
 │   │   │   ├── libchrono-a0c7a1a544abf158.rmeta
 │   │   │   ├── libchrono-b64d84ed6fd1f50f.rlib
@@ -4956,6 +4953,7 @@ ForkRadar/
 │   │   │   ├── libfutures_task-b3d9cb52b6b50815.rlib
 │   │   │   ├── libfutures_task-b3d9cb52b6b50815.rmeta
 │   │   │   ├── libfutures_util-4db7b70e94a4ae70.rmeta
+│   │   │   ├── libfutures_util-522b958175cec7fe.rlib
 │   │   │   ├── libfutures_util-522b958175cec7fe.rmeta
 │   │   │   ├── libfutures_util-831d4ed6c04fc34a.rmeta
 │   │   │   ├── libfutures_util-a2829b7a00fe0ba0.rlib
@@ -5002,5 +5000,7 @@ ForkRadar/
 │   │   │   ├── libheck-c4dbf551d3f1e684.rmeta
 │   │   │   ├── libhex-02cd3e65a6e06daf.rlib
 │   │   │   ├── libhex-02cd3e65a6e06daf.rmeta
-│   │   │   ... (truncated: 1082 more entries not shown)
+│   │   │   ├── libhex-b0757a7bc7b6b2d3.rlib
+│   │   │   ├── libhex-b0757a7bc7b6b2d3.rmeta
+│   │   │   ... (truncated: 1083 more entries not shown)
 ```
