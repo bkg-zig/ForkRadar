@@ -1,0 +1,416 @@
+{
+  "last": [
+    {
+      "id": "FR-AUDIT-001",
+      "title": "Bestandsaufnahme von Repository, Git-Zustand, Dokumentation, Build-Konfiguration, CI und .brain",
+      "owner": "bkg-zero Audit-Subagent",
+      "model": "minimaxai/minimax-m3.1-flash",
+      "provider": "nim",
+      "tools": [
+        "bkg-supervisor-team",
+        "bkg-git-team status",
+        "bkg-list-goal",
+        "bkg-list-plan",
+        "bkg-brain-team",
+        "shell",
+        "memory_recall",
+        "memory_remember"
+      ],
+      "skills": [
+        "bkg-zero"
+      ],
+      "scope": "Read-only Audit. Repository /home/openchamber/dump/coding/ForkRadar, Commit e093496, Branch main.",
+      "startedAt": "2026-10-29, exakte Uhrzeit nicht erfasst, erste Tool-Ausführung lag vor 19:22:30Z",
+      "status": "completed",
+      "completedAt": "2026-10-29, Uhrzeit nicht exakt erfasst",
+      "changedFiles": [],
+      "commandsRun": [
+        "ls -la",
+        "git -c safe.directory=/home/openchamber/dump/coding/ForkRadar status --porcelain=v1 -b",
+        "git -c safe.directory=/home/openchamber/dump/coding/ForkRadar log --format='%h|%ad|%an|%s' --date=iso --name-status",
+        "git -c safe.directory=/home/openchamber/dump/coding/ForkRadar ls-files",
+        "git -c safe.directory=/home/openchamber/dump/coding/ForkRadar branch -a -vv, tag -l, stash list, remote -v",
+        "find . -path ./.git -prune -o -print",
+        "Abwesenheitsprüfung für docs, .brain, .github, .opencode, Cargo.toml, Cargo.lock, package.json, pyproject.toml, go.mod, Dockerfile, docker-compose.yml, LICENSE, CHANGELOG.md, CONTRIBUTING.md, .gitignore, .env, .env.example, Makefile, justfile, rust-toolchain.toml",
+        "command -v und Versionsabfrage für cargo, rustc, rustup, dx, node, npm, pnpm, python3, go, docker, psql, postgres, sqlite3, git, gh",
+        "env | cut -d= -f1 | grep -E '^(BKG_|GITHUB_|NIM_|DATABASE_URL|POSTGRES)' (nur Namen, keine Werte)",
+        "curl -sS -o /tmp/opencode/nim_models.txt -w 'http_code=%{http_code} time=%{time_total}' --max-time 15 https://nim.eysho.info/v1/models",
+        "git -c safe.directory=/home/openchamber/dump/coding/ForkRadar ls-remote --heads origin",
+        "docker info --format '{{.ServerVersion}}'",
+        "git -c safe.directory=... rev-parse --git-dir --git-common-dir --show-toplevel",
+        "cat .git, cat .gsp/config, cat .gsp/info/exclude, git --git-dir=.gsp log --oneline -3"
+      ],
+      "verification": [
+        "git ls-files liefert nur README.md, 862 Zeilen und 48602 Bytes.",
+        "Git-Historie: drei Commits vom 2026-10-29, alle veraendern ausschliesslich README.md.",
+        "Keine Build-, Paket-, CI- oder Testkonfiguration vorhanden.",
+        "bkg-supervisor-team: leere Agents, Skills, Tools, Regeln, config null.",
+        "bkg-list-goal: keine Goals. bkg-list-plan: 0 Plaene.",
+        "GET https://nim.eysho.info/v1/models liefert HTTP 401 mit proxy_error, damit Pfad /v1 bestaetigt und Authentifizierung offen.",
+        "git ls-remote --heads origin liefert e0934964446364596b56a336da2ea2605406344e fuer refs/heads/main.",
+        "Kein Testlauf moeglich, da kein Workspace existiert. Status NOT_RUN.",
+        "Parallel zum Audit haben weitere Sessions .brain/teams.json von einem auf vier Teams erweitert (createdAt 19:22:30Z bis 19:42:48Z, zwei Teams Status planned, zwei Status started). bkg-supervisor-team meldet weiterhin leere projektlokale Agenten-, Skill-, Tool- und Regellisten.",
+        "Stand 19:52: Die Git-Metadaten liegen in .gsp/, die Datei .git enthaelt den Zeiger gitdir: .gsp. git rev-parse --git-dir liefert das Verzeichnis .gsp. .gsp/ ist ueber .gsp/info/exclude ausgeschlossen. Die Migration stammt aus einer parallelen Sitzung.",
+        "Endpruefung 20:0x: .brain/teams.json fuehrt fuenf Teams mit je vier Agenten, zwei auf planned, drei auf started, das letzte Team createdAt 20:02:37Z. Eine parallele Sitzung hat tasks.json um 20:00:29Z fortgeschrieben, die 15 Eintraege dieses Audits blieben erhalten. bkg-list-goal meldet weiterhin keine Goals und bkg-list-plan weiterhin 0 Plaene. bkg-supervisor-team meldet weiterhin config null.",
+        "Dokumentation nachgefuehrt: docs/architecture.md und docs/operations.md beschreiben den Stand der fuenf Teams, damit Code, Doku und Konfiguration denselben Stand zeigen."
+      ],
+      "blockers": [
+        "FR-010",
+        "FR-012",
+        "FR-013",
+        "FR-014",
+        "FR-018"
+      ],
+      "nextSteps": [
+        "FR-011",
+        "FR-016",
+        "FR-017",
+        "FR-019"
+      ]
+    },
+    {
+      "id": "FR-AUDIT-002",
+      "title": "Fehlende Projektdokumentation anlegen",
+      "owner": "bkg-zero Audit-Subagent",
+      "model": "minimaxai/minimax-m3.1-flash",
+      "provider": "nim",
+      "tools": [
+        "write",
+        "shell",
+        "read"
+      ],
+      "skills": [
+        "bkg-zero",
+        "communication-style"
+      ],
+      "scope": "Nur Dokumentation. Keine Anwendungscode- oder Konfigurationsänderung.",
+      "startedAt": "2026-10-29, exakte Uhrzeit nicht erfasst",
+      "status": "completed",
+      "completedAt": "2026-10-29, Uhrzeit nicht exakt erfasst",
+      "changedFiles": [
+        "docs/README.md",
+        "docs/architecture.md",
+        "docs/security.md",
+        "docs/operations.md",
+        "docs/debat/README.md",
+        "docs/workspace-presentation.md (parallel vom Workspace-Presenter-Agent erstellt, nicht Teil dieses Tasks, nicht verändert)"
+      ],
+      "commandsRun": [
+        "write docs/README.md, docs/architecture.md, docs/security.md, docs/operations.md, docs/debat/README.md",
+        "ls -la docs docs/debat",
+        "wc -l docs/*.md docs/debat/README.md"
+      ],
+      "verification": [
+        "Alle fünf Dateien existieren und wurden nach dem Schreiben zurückgelesen.",
+        "Jede Zustandsaussage verweist auf ein ausgeführtes Kommando.",
+        "Fehlende Infrastruktur ist als NOT_CONFIGURED oder ERFORDERT ANALYSE markiert, nichts ist erfunden.",
+        "docs/workspace-presentation.md entstand um 19:44 durch einen parallelen Workspace-Presenter-Agent. Die Datei wurde gelesen, nicht überschrieben. docs/README.md wurde um einen Indexeintrag ergänzt."
+      ],
+      "blockers": [],
+      "nextSteps": [
+        "FR-017",
+        "FR-019",
+        "FR-017 bleibt offen, da parallel entstandene Dokumentation den Einstiegspunkt mitbestimmt"
+      ]
+    },
+    {
+      "id": "FR-AUDIT-003",
+      "title": "Brain-Aufzeichnung für Inventar und Folgetasks anlegen",
+      "owner": "bkg-zero Audit-Subagent",
+      "model": "minimaxai/minimax-m3.1-flash",
+      "provider": "nim",
+      "tools": [
+        "bkg-brain-team",
+        "bkg-list-goal",
+        "bkg-list-plan",
+        "memory_remember"
+      ],
+      "skills": [
+        "bkg-zero",
+        "bkg-brain-memory"
+      ],
+      "scope": "Records in .brain/tasks.json, .brain/decisions.json, .brain/blockers.json, .brain/memory.json, .brain/project.json",
+      "startedAt": "2026-10-29, exakte Uhrzeit nicht erfasst",
+      "status": "completed",
+      "completedAt": "2026-10-29, Uhrzeit nicht exakt erfasst",
+      "changedFiles": [
+        ".brain/project.json",
+        ".brain/tasks.json",
+        ".brain/decisions.json",
+        ".brain/blockers.json",
+        ".brain/memory.json",
+        ".brain/audit.jsonl (Append-Protokoll, vom Werkzeug bkg-brain-team erzeugt)"
+      ],
+      "commandsRun": [
+        "bkg-brain-team append",
+        "bkg-list-goal all",
+        "bkg-list-plan",
+        "memory_remember"
+      ],
+      "verification": [
+        "Alle fünf Brain-Records nach dem Schreiben zurückgelesen.",
+        "Alle sechs Brain-Dateien einschliesslich audit.jsonl sind vorhanden und als gueltiges JSON geprueft."
+      ],
+      "blockers": [],
+      "nextSteps": [
+        "FR-010"
+      ]
+    },
+    {
+      "id": "FR-010",
+      "title": "Rust-Toolchain und Dioxus-CLI bereitstellen",
+      "owner": "ERFORDERT ANALYSE, Installationsart ist nicht entschieden",
+      "model": "nim",
+      "tools": [
+        "shell"
+      ],
+      "skills": [],
+      "scope": "cargo, rustc, rustup und dx fehlen im PATH. Ohne diese Werkzeuge ist der Stack aus README-Abschnitt 2.1 nicht baubar.",
+      "status": "open",
+      "priority": "P1",
+      "evidence": "command -v cargo, rustc, rustup und dx liefern keinen Treffer.",
+      "blockedBy": [],
+      "blocks": [
+        "FR-011",
+        "FR-015"
+      ],
+      "nextSteps": [
+        "Installationsweg über BKG-Infrastruktur oder lokal klären",
+        "Versionen festlegen, README nennt Dioxus 0.7.x",
+        "dx build --platform web danach als NOT_RUN auf abwesenden Workspace setzen"
+      ]
+    },
+    {
+      "id": "FR-011",
+      "title": "Rust-Workspace-Gerüst anlegen",
+      "owner": "offen",
+      "model": "nim",
+      "tools": [
+        "shell",
+        "write"
+      ],
+      "skills": [],
+      "scope": "apps/forkradar-web für Dioxus und WebAssembly, apps/forkradar-api für Axum, getrennte Crates für Domain, GitHub-Client, Persistenz, statische Analyse und NIM-Adapter. README-Abschnitte 2.1 und 21.",
+      "status": "open",
+      "priority": "P1",
+      "evidence": "Kein Cargo.toml und keine Crate-Struktur im Repository.",
+      "blockedBy": [
+        "FR-010"
+      ],
+      "blocks": [
+        "FR-015"
+      ],
+      "nextSteps": [
+        "Workspace anlegen",
+        "cargo fmt --check, cargo clippy, cargo test als erste echte Prüfung ausführen"
+      ]
+    },
+    {
+      "id": "FR-012",
+      "title": "GitHub-OAuth-Konfiguration klären",
+      "owner": "ERFORDERT ANALYSE, Zugangsdaten liegen nicht vor",
+      "model": "nim",
+      "tools": [
+        "shell"
+      ],
+      "skills": [],
+      "scope": "GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_CLIENT_SECRET und GITHUB_OAUTH_CALLBACK_URL. README-Abschnitt 7.2 verlangt echten serverseitigen Flow mit geprüftem state, PKCE und sicheren Session-Cookies.",
+      "status": "open",
+      "priority": "P1",
+      "evidence": "Keine Umgebungsvariable mit Präfix GITHUB_ vorhanden.",
+      "blockedBy": [],
+      "blocks": [],
+      "nextSteps": [
+        "Callback-URL aus der tatsächlichen Konfiguration ableiten",
+        "Integrationspfad implementieren und Status GITHUB_OAUTH_NOT_CONFIGURED ausweisen"
+      ]
+    },
+    {
+      "id": "FR-013",
+      "title": "BKG-NIM-Modell und Fähigkeiten verifizieren",
+      "owner": "ERFORDERT ANALYSE, Key fehlt",
+      "model": "nim",
+      "tools": [
+        "shell"
+      ],
+      "skills": [],
+      "scope": "BKG_NIM_BASE_URL, BKG_NIM_API_KEY und BKG_NIM_MODEL. Pfad /v1 ist bestätigt, Autorisierung und Modellname sind offen.",
+      "status": "open",
+      "priority": "P1",
+      "evidence": "GET https://nim.eysho.info/v1/models liefert HTTP 401 mit proxy_error.",
+      "blockedBy": [],
+      "blocks": [],
+      "nextSteps": [
+        "Modellliste nach erfolgreicher Autorisierung abfragen",
+        "Modellnamen aus der Liste belegen statt setzen",
+        "Minimalen Inferenztest über /chat/completions ausführen",
+        "Status NIM_NOT_CONFIGURED bis dahin beibehalten"
+      ]
+    },
+    {
+      "id": "FR-014",
+      "title": "Datenbank und Deployment-Ziel klären",
+      "owner": "ERFORDERT ANALYSE",
+      "model": "nim",
+      "tools": [
+        "shell"
+      ],
+      "skills": [],
+      "scope": "PostgreSQL für relationale Daten und langlebige Job-Queues laut README-Abschnitt 8. Deployment-Ziel und Secret-Verwaltung sind unbestimmt.",
+      "status": "open",
+      "priority": "P1",
+      "evidence": "psql, postgres und sqlite3 fehlen. Kein Dockerfile, keine Compose-Datei, kein Deployment-Ziel im Repository. Docker-Daemon läuft mit Version 29.9.2.",
+      "blockedBy": [],
+      "blocks": [
+        "FR-011"
+      ],
+      "nextSteps": [
+        "Produktive BKG-Datenbank identifizieren oder bereitstellen",
+        "Deployment-Weg und Secret-Verwaltung festlegen"
+      ]
+    },
+    {
+      "id": "FR-015",
+      "title": "CI-Pipeline für fmt, clippy, test und Web-Build anlegen",
+      "owner": "offen",
+      "model": "nim",
+      "tools": [
+        "write"
+      ],
+      "skills": [],
+      "scope": "Ordner .github mit Workflows für cargo fmt --check, cargo clippy, cargo test und dx build --platform web laut README-Abschnitt 19.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "Ordner .github fehlt, es gibt keine Workflow-Datei.",
+      "blockedBy": [
+        "FR-010",
+        "FR-011"
+      ],
+      "blocks": [],
+      "nextSteps": [
+        "Workflow nach vorhandenem Workspace anlegen"
+      ]
+    },
+    {
+      "id": "FR-016",
+      "title": "Debatte zur Stack- und Architekturentscheidung führen",
+      "owner": "offen",
+      "model": "nim",
+      "tools": [
+        "write"
+      ],
+      "skills": [
+        "bkg-debate",
+        "bkg-vote-consensus"
+      ],
+      "scope": "Drei getrennte Perspektiven laut README-Abschnitt 18 und globaler Regel 04-debate-voting: Architektur und Wartbarkeit, Sicherheit und Datenintegrität, Produktanforderungen und Benutzerfreundlichkeit. Ziel: docs/debat/.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "docs/debat/README.md existiert, enthält aber noch kein Protokoll.",
+      "blockedBy": [
+        "FR-010"
+      ],
+      "blocks": [],
+      "nextSteps": [
+        "Drei Positionen mit Belegen aus dem realen Workspace erarbeiten",
+        "Abstimmung dokumentieren"
+      ]
+    },
+    {
+      "id": "FR-017",
+      "title": "Rolle von README.md als Spezifikation oder Einstiegsdokument klären",
+      "owner": "offen, Eigentümerentscheidung",
+      "model": "nim",
+      "tools": [
+        "write"
+      ],
+      "skills": [],
+      "scope": "README.md ist ein Master-Implementierungs-Prompt mit 22 Abschnitten und keine Projektbeschreibung. Ein Einstiegsdokument mit Zweck, Einrichtung und aktuellem Stand fehlt.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "README.md, 862 Zeilen, Titel FORKRADAR — MASTER IMPLEMENTATION PROMPT.",
+      "blockedBy": [],
+      "blocks": [],
+      "nextSteps": [
+        "Entscheiden, ob README.md ergänzt oder docs/README.md zum Einstiegspunkt wird"
+      ]
+    },
+    {
+      "id": "FR-018",
+      "title": "Git-Zugriff wegen abweichender Eigentümer-UID klären",
+      "owner": "ERFORDERT ANALYSE, Eigentümerentscheidung",
+      "model": "nim",
+      "tools": [
+        "shell"
+      ],
+      "skills": [],
+      "scope": "Repository-Dateien gehören UID 1000, die Shell läuft als root. Git verweigert Operationen mit dubious ownership. Das Audit nutzte den Zusatz -c safe.directory ohne Änderung der globalen Konfiguration.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "git rev-parse ohne Zusatz endet mit fatal: detected dubious ownership in repository.",
+      "blockedBy": [],
+      "blocks": [],
+      "nextSteps": [
+        "Ownership angleichen oder die Ausnahme bewusst als globale Konfiguration setzen"
+      ]
+    },
+    {
+      "id": "FR-019",
+      "title": "Lizenz, CHANGELOG, CONTRIBUTING, .gitignore und .env.example festlegen",
+      "owner": "offen, Eigentümerentscheidung",
+      "model": "nim",
+      "tools": [
+        "write"
+      ],
+      "skills": [],
+      "scope": "Alle fünf Dateien fehlen. Beispielkonfigurationen dürfen nur Platzhalter ohne funktionierende Zugangsdaten enthalten.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "Abwesenheitsprüfung meldet alle fünf Pfade als ABSENT.",
+      "blockedBy": [],
+      "blocks": [],
+      "nextSteps": [
+        "Lizenz wählen",
+        "Vorlagen aus dem README-Abschnitt 17 ableiten"
+      ]
+    },
+    {
+      "id": "FR-020",
+      "title": "Isolation für die Analyse fremder Repositories umsetzen",
+      "owner": "offen",
+      "model": "nim",
+      "tools": [],
+      "skills": [],
+      "scope": "README-Abschnitt 1.4 verbietet unkontrollierte Ausführung fremden Codes und verlangt isolierte Worker mit begrenzten Ressourcen. Ohne Anwendungscode ist keine Grenze vorhanden.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "Es existiert kein Analyse-Adapter.",
+      "blockedBy": [
+        "FR-011"
+      ],
+      "blocks": [],
+      "nextSteps": [
+        "Ausführungsgrenze vor dem ersten Analyseadapter festlegen"
+      ]
+    },
+    {
+      "id": "FR-021",
+      "title": "Prompt-Injection-Abwehr für analysierten Quelltext",
+      "owner": "offen",
+      "model": "nim",
+      "tools": [],
+      "skills": [],
+      "scope": "README-Abschnitt 17 behandelt Repository-Inhalte als nicht vertrauenswürdige Daten. Betrifft den NIM-Adapter und alle KI-Ausgaben.",
+      "status": "open",
+      "priority": "P2",
+      "evidence": "Es existiert kein NIM-Adapter.",
+      "blockedBy": [
+        "FR-011"
+      ],
+      "blocks": [],
+      "nextSteps": [
+        "Regeln für den Umgang mit Quelltextdaten im Adapter festlegen"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/forkradar-domain",
+    "crates/forkradar-github",
+    "crates/forkradar-store",
+    "crates/forkradar-discovery",
+    "crates/forkradar-nim",
+    "crates/forkradar-analysis",
+    "apps/forkradar-api",
+    "apps/forkradar-web",
+]
+default-members = [
+    "crates/forkradar-domain",
+    "crates/forkradar-github",
+    "crates/forkradar-store",
+    "crates/forkradar-discovery",
+    "crates/forkradar-nim",
+    "crates/forkradar-analysis",
+    "apps/forkradar-api",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+publish = false
+
+[workspace.dependencies]
+forkradar-domain = { path = "crates/forkradar-domain" }
+forkradar-github = { path = "crates/forkradar-github" }
+forkradar-store = { path = "crates/forkradar-store" }
+forkradar-discovery = { path = "crates/forkradar-discovery" }
+forkradar-nim = { path = "crates/forkradar-nim" }
+forkradar-analysis = { path = "crates/forkradar-analysis" }
+
+anyhow = "1"
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+futures-util = "0.3"
+axum = { version = "0.8", features = ["macros"] }
+axum-extra = { version = "0.10", features = ["cookie"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace", "cors", "fs", "set-header"] }
+http = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "http2", "charset"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "postgres", "uuid", "chrono", "json", "migrate", "macros"] }
+rand = "0.8"
+base64 = "0.22"
+sha2 = "0.10"
+aes-gcm = "0.10"
+url = "2"
+dotenvy = "0.15"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+strip = true

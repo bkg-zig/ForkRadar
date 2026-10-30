@@ -1,0 +1,39 @@
+{
+  "last": [
+    {
+      "id": "FR-M-001",
+      "date": "2026-10-29",
+      "topic": "Projektbestand",
+      "content": "ForkRadar war zum 2026-10-29 ein reines Anforderungsdokument. Das Repository enthielt genau eine versionierte Datei, README.md mit 862 Zeilen und 48.602 Bytes. Anwendungscode, Build-Konfiguration, Tests, CI und docs fehlten. Die Git-Historie umfasst drei Commits vom 2026-10-29, die alle ausschliesslich README.md veraendern.",
+      "status": "settled"
+    },
+    {
+      "id": "FR-M-002",
+      "date": "2026-10-29",
+      "topic": "BKG-NIM",
+      "content": "Der Endpunkt https://nim.eysho.info/v1/models antwortet ohne Bearer-Key mit HTTP 401 und dem Fehler proxy_error. Damit sind Basis-URL und Pfad /v1 bestaetigt, Autorisierung und Modellname sind offen. Der Modellname darf erst aus der authentifizierten Modellliste belegt werden.",
+      "status": "settled"
+    },
+    {
+      "id": "FR-M-003",
+      "date": "2026-10-29",
+      "topic": "Werkzeuge",
+      "content": "Im Arbeitsbereich fehlen cargo, rustc, rustup und dx. Vorhanden sind Node 20.19.2, npm, Python 3.13.5, Docker 29.9.2 und Git 2.47.3. psql, postgres, sqlite3, go und gh fehlen. Der Docker-Daemon ist erreichbar.",
+      "status": "settled"
+    },
+    {
+      "id": "FR-M-004",
+      "date": "2026-10-29",
+      "topic": "Git-Zugriff",
+      "content": "Die Repository-Dateien in /home/openchamber/dump/coding/ForkRadar gehoeren UID 1000, waehrend die Shell als root laeuft. Git verweigert Operationen mit dubious ownership. In dieser Umgebung funktioniert der Zusatz -c safe.directory=/home/openchamber/dump/coding/ForkRadar bei jedem Kommando.",
+      "status": "settled"
+    },
+    {
+      "id": "FR-M-005",
+      "date": "2026-10-29",
+      "topic": "BKG-Werkzeuge",
+      "content": "bkg-supervisor-team meldet im Projekt keine Agenten, Skills, Tools, Regeln und config null. Es gibt kein BKG-Goal und keinen BKG-Plan. .brain/teams.json enthält ein geplantes Team mit vier Agenten im Status planned und ohne Skills.",
+      "status": "settled"
+    }
+  ]
+}

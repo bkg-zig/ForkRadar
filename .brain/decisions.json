@@ -1,0 +1,92 @@
+{
+  "last": [
+    {
+      "id": "FR-D-001",
+      "date": "2026-10-29",
+      "title": "Audit ohne Anwendungscode",
+      "decision": "Der Auftrag umfasst Inventar und Dokumentation. Es wurde kein Anwendungscode erstellt.",
+      "rationale": "Der Auftrag des aufrufenden Sessions ist eine Bestandsaufnahme. Ohne Toolchain, Datenbank und OAuth-Konfiguration wäre eine Implementierung ohnehin nur Scheinstand.",
+      "alternatives": [
+        "Direkter Start eines Workspace ohne Rust-Toolchain",
+        "Beispielcode mit erfundenen Ergebnissen"
+      ],
+      "rejectedBecause": "Beide Alternativen erzeugen unbelegten Fortschritt.",
+      "status": "decided"
+    },
+    {
+      "id": "FR-D-002",
+      "date": "2026-10-29",
+      "title": "README.md bleibt unverändert",
+      "decision": "README.md wird nicht angefasst. Der Ist-Zustand steht in docs/.",
+      "rationale": "Die Datei ist die maßgebliche Spezifikation des Projekts. Eine Umformulierung würde Anforderungen und Belegstand vermischen.",
+      "alternatives": [
+        "README.md um Ist-Zustand ergänzen",
+        "README.md als Einstiegsdokument umschreiben"
+      ],
+      "rejectedBecause": "Beide Alternativen verändern die verbindliche Spezifikation in einem reinen Audit-Schritt. Die Frage ist als FR-017 offen.",
+      "status": "decided"
+    },
+    {
+      "id": "FR-D-003",
+      "date": "2026-10-29",
+      "title": "Stack Rust mit Dioxus und Axum bleibt offen",
+      "decision": "Der Stack aus README-Abschnitt 2.1 wird nicht bestätigt, aber auch nicht verworfen. Die Frage ist als FR-016 mit Debatte erfasst.",
+      "rationale": "cargo, rustc, rustup und dx fehlen. Ohne Toolchain ist weder ein Build noch ein belastbarer Vergleich mit einer vorhandenen BKG-Architektur möglich. Es gibt im Repository keinen anderen Workspace, der einen Vorrang hätte.",
+      "alternatives": [
+        "Stack sofort als bestätigt dokumentieren",
+        "React- oder Node-Stack annehmen"
+      ],
+      "rejectedBecause": "Beide Alternativen sind unbelegt. Der README-Auftrag ist an die reale Umgebung gebunden.",
+      "status": "open"
+    },
+    {
+      "id": "FR-D-004",
+      "date": "2026-10-29",
+      "title": "Git-Zugriff ohne Änderung der globalen Konfiguration",
+      "decision": "Alle Git-Kommandos liefen mit dem Zusatz -c safe.directory=/home/openchamber/dump/coding/ForkRadar.",
+      "rationale": "Die Repository-Dateien gehören UID 1000, die Shell läuft als root. Eine globale Ausnahme verändert die Nutzerkonfiguration und ist eine Eigentümerentscheidung.",
+      "alternatives": [
+        "git config --global --add safe.directory",
+        "Ownership der Dateien ändern"
+      ],
+      "rejectedBecause": "Beide Alternativen ändern den Zustand außerhalb des Auftrags. Der Punkt ist als FR-018 offen.",
+      "status": "decided"
+    },
+    {
+      "id": "FR-D-005",
+      "date": "2026-10-29",
+      "title": "Brain-Records über das BKG-Werkzeug schreiben",
+      "decision": "Die Records in .brain wurden mit bkg-brain-team append geschrieben, nicht als freie JSON-Dateien.",
+      "rationale": "Das Werkzeug hält das Format der Brain-Records ein und liefert den Pfad der geschriebenen Datei zurück.",
+      "alternatives": [
+        "Direktes Schreiben der JSON-Dateien mit dem write-Werkzeug"
+      ],
+      "rejectedBecause": "Das direkte Schreiben würde das Format des Brain-Systems umgehen.",
+      "status": "decided"
+    },
+    {
+      "id": "FR-D-006",
+      "date": "2026-10-29",
+      "title": "Keine Beispielkonfiguration und keine Secrets anlegen",
+      "decision": "Es wurde keine .env.example und kein Beispiel-Key erzeugt.",
+      "rationale": "Es existiert noch keine Anwendung, deren Konfiguration beschrieben werden könnte. Ohne echten Konfigurationsschema wäre eine Beispieldatei spekulativ.",
+      "alternatives": [
+        "Leere .env.example mit den Variablennamen aus README-Abschnitt 17"
+      ],
+      "rejectedBecause": "Die Variablenliste ist aus dem README übernommen und nicht durch einen laufenden Dienst bestätigt. Das Thema ist als FR-019 offen.",
+      "status": "decided"
+    },
+    {
+      "id": "FR-D-007",
+      "date": "2026-10-29",
+      "title": "Kein BKG-Goal und kein Plan angelegt",
+      "decision": "bkg-list-goal und bkg-list-plan wurden geprüft und blieben ohne Erstellung.",
+      "rationale": "Der Auftrag verlangt Inventar und Folgetasks, keine neue Zielplanung. Das vorhandene Team in .brain/teams.json ist noch im Status planned.",
+      "alternatives": [
+        "Goal für den vertikalen Durchstich aus README-Abschnitt 3 anlegen"
+      ],
+      "rejectedBecause": "Ein Goal ohne verfügbaren Toolchain und ohne belastbare Architekturgrundlage würde Planung als Fortschritt darstellen.",
+      "status": "decided"
+    }
+  ]
+}

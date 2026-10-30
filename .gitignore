@@ -1,0 +1,25 @@
+# Rust build output
+/target
+**/target
+Cargo.lock.orig
+
+# Dioxus / wasm output
+/apps/forkradar-web/dist
+/apps/forkradar-web/.dioxus
+/dx
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Local database and runtime data
+/data
+*.sqlite
+*.sqlite3
+
+# Editor and OS noise
+.idea
+.vscode
+*.swp
+.DS_Store

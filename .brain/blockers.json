@@ -1,0 +1,52 @@
+{
+  "last": [
+    {
+      "id": "FR-B-001",
+      "task": "FR-011, FR-015",
+      "severity": "blocking",
+      "summary": "Keine Rust-Toolchain und keine Dioxus-CLI im Environment.",
+      "evidence": "command -v cargo, rustc, rustup und dx liefern keinen Treffer. Node 20.19.2, npm, Python 3.13.5, Docker 29.9.2 und Git 2.47.3 sind vorhanden.",
+      "escalation": "Eigentümer oder BKG-Betrieb, Entscheidung über Installationsweg und Versionen. ERFORDERT ANALYSE."
+    },
+    {
+      "id": "FR-B-002",
+      "task": "FR-012",
+      "severity": "blocking",
+      "summary": "GitHub-OAuth-Credentials fehlen.",
+      "evidence": "Keine Umgebungsvariable mit Präfix GITHUB_ vorhanden.",
+      "escalation": "Zuständige Person für den GitHub-App- oder OAuth-Client. Status bleibt GITHUB_OAUTH_NOT_CONFIGURED."
+    },
+    {
+      "id": "FR-B-003",
+      "task": "FR-013",
+      "severity": "blocking",
+      "summary": "BKG-NIM ist ohne API-Key nicht nutzbar, der Modellname ist unbekannt.",
+      "evidence": "GET https://nim.eysho.info/v1/models liefert HTTP 401 mit proxy_error. Die Basis-URL und der Pfad /v1 sind damit bestätigt.",
+      "escalation": "Zuständige Person für den NIM-Zugang. Modellname erst aus der authentifizierten Modellliste belegen."
+    },
+    {
+      "id": "FR-B-004",
+      "task": "FR-014",
+      "severity": "blocking",
+      "summary": "Keine Datenbank und kein Deployment-Ziel auffindbar.",
+      "evidence": "psql, postgres und sqlite3 fehlen. Kein Dockerfile, keine Compose-Datei. Der Docker-Daemon läuft mit Version 29.9.2.",
+      "escalation": "Betrieb oder Eigentümer. ERFORDERT ANALYSE."
+    },
+    {
+      "id": "FR-B-005",
+      "task": "FR-015",
+      "severity": "non-blocking",
+      "summary": "Keine CI-Konfiguration vorhanden.",
+      "evidence": "Ordner .github fehlt, es gibt keine Workflow-Datei.",
+      "escalation": "Nach FR-010 und FR-011 umsetzbar."
+    },
+    {
+      "id": "FR-B-006",
+      "task": "FR-018",
+      "severity": "non-blocking",
+      "summary": "Git verweigert Operationen wegen abweichender Eigentümer-UID.",
+      "evidence": "Repository-Dateien gehören UID 1000, die Shell läuft als root. git rev-parse ohne Zusatz endet mit fatal: detected dubious ownership in repository.",
+      "escalation": "Eigentümerentscheidung. Das Audit nutzte den Zusatz -c safe.directory ohne Konfigurationsänderung."
+    }
+  ]
+}

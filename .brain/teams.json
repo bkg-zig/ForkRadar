@@ -1,0 +1,518 @@
+{
+  "version": 1,
+  "teams": [
+    {
+      "id": "bkgteam-mvtxk6jn-85r1ohg",
+      "name": "ForkRadar Core Team Plan",
+      "summary": "Vier-Agenten-Team für die Erfassung, Analyse und Präsentation des GitHub Fork-Netzwerks mit Upstream-Vergleich, Qualitäts- und Sicherheitsanalysen sowie einem persönlichen Workspace.",
+      "goal": "Produktkern: Ein Benutzer registriert ein GitHub-Main-Repository. ForkRadar erfasst das über die verfügbaren und autorisierten Datenquellen erreichbare Fork-Netzwerk rekursiv, verfolgt Commits und Releases, vergleicht Forks mit ihrem Upstream, führt verfügbare Qualitäts- und Sicherheitsanalysen aus und präsentiert die belegten Ergebnisse in einem professionellen persönlichen Workspace.",
+      "createdAt": "2026-10-29T19:22:30.563Z",
+      "updatedAt": "2026-10-29T19:22:26.103Z",
+      "status": "planned",
+      "agents": [
+        {
+          "id": "fork-discovery",
+          "name": "Fork Discovery Agent",
+          "role": "Data Collection and Graph Expansion",
+          "mission": "Registriert das GitHub Main-Repository, ermittelt das über autorisierte Datenquellen erreichbare Fork-Netzwerk rekursiv und erfasst Commits und Releases für jeden Knoten.",
+          "skills": [],
+          "model": {
+            "id": "deepseek-ai/deepseek-v4.1-flash",
+            "providerID": "nim",
+            "name": "deepseek-ai/deepseek-v4.1-flash"
+          },
+          "engineAgentId": "explore",
+          "voice": "Annika",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "fork-comparison",
+          "name": "Fork Comparison Agent",
+          "role": "Upstream Vergleich und Delta-Analyse",
+          "mission": "Vergleicht jeden Fork mit seinem Upstream, identifiziert Divergenzen, Merge-Fähigkeit und Feature-Drift und dokumentiert belegte Deltas.",
+          "skills": [],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "researcher",
+          "voice": "Jette",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "quality-security",
+          "name": "Quality Security Analyzer",
+          "role": "Qualitäts- und Sicherheitsbewertung",
+          "mission": "Führt verfügbare Code-Qualitäts- und Sicherheitsanalysen auf den Forks aus und liefert belegte Befunde mit Quellenverweisen.",
+          "skills": [],
+          "model": {
+            "id": "mistralai/mistral-large",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large"
+          },
+          "engineAgentId": "reviewer",
+          "voice": "Josefine",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "workspace-presenter",
+          "name": "Workspace Presenter Agent",
+          "role": "Ergebnispräsentation Workspace",
+          "mission": "Erstellt einen professionellen persönlichen Workspace und präsentiert Fork-Netzwerk, Vergleiche und Analyseergebnisse mit belegten Daten für den Nutzer.",
+          "skills": [],
+          "model": {
+            "id": "meta/muse-glimmer-30b",
+            "providerID": "nim",
+            "name": "meta/muse-glimmer-30b"
+          },
+          "engineAgentId": "builder",
+          "voice": "Jule",
+          "seenMessageIds": [],
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "bkgteam-mvtxq2ps-ewv3ae8",
+      "name": "ForkRadar Agententeamplan",
+      "summary": "Vierköpfiges Team zur rekursiven Erfassung des Fork-Netzwerks, Verfolgung von Commits und Releases, Vergleich mit Upstream, Durchführung von Qualitäts- und Sicherheitsanalysen und Präsentation der belegten Ergebnisse in einem professionellen persönlichen Workspace.",
+      "goal": "Produktkern: Ein Benutzer registriert ein GitHub-Main-Repository. ForkRadar erfasst das über die verfügbaren und autorisierten Datenquellen erreichbare Fork-Netzwerk rekursiv, verfolgt Commits und Releases, vergleicht Forks mit ihrem Upstream, führt verfügbare Qualitäts- und Sicherheitsanalysen aus und präsentiert die belegten Ergebnisse in einem professionellen persönlichen Workspace.",
+      "createdAt": "2026-10-29T19:27:05.536Z",
+      "updatedAt": "2026-10-29T19:31:42.955Z",
+      "status": "planned",
+      "agents": [
+        {
+          "id": "fork-graph-research",
+          "name": "Fork-Graph-Forschung",
+          "role": "Netzwerkentdeckung und Graphaufbau",
+          "mission": "Erfasst das autorisierte Fork-Netzwerk rekursiv ab registriertem Main-Repository, sammelt Metadaten zu Forks, Upstream-Links und Sichtbarkeit und liefert einen belegten Graph für Nachfolgeanalysen.",
+          "skills": [],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "researcher",
+          "voice": "Annika",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "commit-release-tracker",
+          "name": "Commit-Release-Tracker",
+          "role": "Verfolgung und Vergleich",
+          "mission": "Verfolgt Commits und Releases des Main-Repos und aller erreichbaren Forks, vergleicht Forks mit Upstream, ermittelt Divergenz, Merge-Fähigkeit und Aktivitätsmetriken und dokumentiert die Ergebnisse nachweisbar.",
+          "skills": [],
+          "model": {
+            "id": "mistralai/mistral-large-2-instruct",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large-2-instruct"
+          },
+          "engineAgentId": "worker",
+          "voice": "Jette",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "quality-security-analysis",
+          "name": "Qualitäts-Sicherheits-Analyse",
+          "role": "Analyseausführung",
+          "mission": "Führt verfügbare Qualitäts- und Sicherheitsanalysen auf Forks aus, priorisiert Befunde nach Risiko, verknüpft sie mit Commit-Historie und liefert belegte Analyseberichte.",
+          "skills": [],
+          "model": {
+            "id": "google/gemma-4-31b-it",
+            "providerID": "nim",
+            "name": "google/gemma-4-31b-it"
+          },
+          "engineAgentId": "builder",
+          "voice": "Josefine",
+          "seenMessageIds": [],
+          "status": "planned"
+        },
+        {
+          "id": "workspace-presenter",
+          "name": "Workspace-Präsentation",
+          "role": "Präsentation und Workspace",
+          "mission": "Präsentiert alle belegten Ergebnisse in einem professionellen persönlichen Workspace, stellt Filter, Vergleichsansichten und Nachweise bereit und hält Konsistenz zwischen Datenquellen und UI.",
+          "skills": [],
+          "model": {
+            "id": "meta/muse-glimmer-30b",
+            "providerID": "nim",
+            "name": "meta/muse-glimmer-30b"
+          },
+          "engineAgentId": "reviewer",
+          "voice": "Jule",
+          "seenMessageIds": [],
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "bkgteam-mvty1b76-q2yq4es",
+      "name": "ForkRadar Produktkern Teamplan",
+      "summary": "Vier Agenten erfassen das GitHub-Main-Repository, bauen das autorisierte Fork-Netzwerk rekursiv auf, verfolgen Commits und Releases, vergleichen Forks mit Upstream, führen verfügbare Qualitäts- und Sicherheitsanalysen aus und präsentieren belegte Ergebnisse in einem persönlichen Workspace.",
+      "goal": "Produktkern: Ein Benutzer registriert ein GitHub-Main-Repository. ForkRadar erfasst das über die verfügbaren und autorisierten Datenquellen erreichbare Fork-Netzwerk rekursiv, verfolgt Commits und Releases, vergleicht Forks mit ihrem Upstream, führt verfügbare Qualitäts- und Sicherheitsanalysen aus und präsentiert die belegten Ergebnisse in einem professionellen persönlichen Workspace.",
+      "createdAt": "2026-10-29T19:35:49.746Z",
+      "updatedAt": "2026-10-29T20:00:46.486Z",
+      "status": "started",
+      "agents": [
+        {
+          "id": "fork-harvester",
+          "name": "Fork Network Harvester",
+          "role": "Datenakquise und Graphaufbau",
+          "mission": "Registriert das Main-Repository, crawlt über autorisierte Datenquellen das erreichbare Fork-Netzwerk rekursiv, erfasst Commits und Releases, baut den Fork-Graph mit Provenienz und hält den aktuellen Zustand im Projektgedächtnis.",
+          "skills": [
+            "bkg-brain-memory",
+            "bkg-task-flow"
+          ],
+          "model": {
+            "id": "01-ai/yi-large",
+            "providerID": "nim",
+            "name": "01-ai/yi-large"
+          },
+          "engineAgentId": "explore",
+          "voice": "Annika",
+          "sessionId": "ses_e76d62d32ffeUrNbHmTG3qSmPs",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "diff-analyzer",
+          "name": "Upstream Diff und Analyse",
+          "role": "Vergleich und Qualitätsanalyse",
+          "mission": "Vergleicht jeden Fork mit seinem Upstream, erstellt Diff- und Merge-Statistiken, führt verfügbare Code-Qualitäts- und Sicherheitsanalysen auf erreichbaren Artefakten aus und dokumentiert belegte Befunde mit Quellenverweisen.",
+          "skills": [
+            "bkg-labertasche",
+            "bkg-production-readiness"
+          ],
+          "model": {
+            "id": "mistralai/mistral-large",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large"
+          },
+          "engineAgentId": "worker",
+          "voice": "Jette",
+          "sessionId": "ses_e76d62bd7ffekNvH5jGpfAMczT",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "workspace-presenter",
+          "name": "Workspace Präsentation",
+          "role": "Ergebnisaufbereitung und UI-Konsolidierung",
+          "mission": "Aggregiert die belegten Analyseergebnisse, stellt sie in einem professionellen persönlichen Workspace dar, gewährleistet Nachvollziehbarkeit der Quellen und konsistente Darstellungen für den Nutzer.",
+          "skills": [
+            "communication-style",
+            "bkg-ui-browser-verification"
+          ],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "builder",
+          "voice": "Josefine",
+          "sessionId": "ses_e76d62a7cffeNL36u5CCfctRk1",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "orchestrator",
+          "name": "Orchestrierung und Verifikation",
+          "role": "Koordination und Sicherheitsgrenzen",
+          "mission": "Koordiniert die drei Spezialagenten, erzwingt autorisierte Datenquellen und Berechtigungen, prüft Provenienz und Vollständigkeit, eskaliert offene Entscheidungen und hält den Teamzustand synchron.",
+          "skills": [
+            "bkg-supervisor",
+            "bkg-arbitration"
+          ],
+          "model": {
+            "id": "meta/muse-glimmer-30b",
+            "providerID": "nim",
+            "name": "meta/muse-glimmer-30b"
+          },
+          "engineAgentId": "supervisor",
+          "voice": "Jule",
+          "sessionId": "ses_e76d62924ffeLwimNtsrnmpP5e",
+          "seenMessageIds": [
+            "msg_1892c3dfc001Rk9ozJubbELAX1"
+          ],
+          "status": "started"
+        }
+      ]
+    },
+    {
+      "id": "bkgteam-mvtyaacw-qzmo39g",
+      "name": "ForkRadar Agent Team",
+      "summary": "Registrierung von Main-Repositories, rekursiver Aufbau des autorisierten Fork-Netzwerks, Verfolgung von Commits und Releases, Upstream-Vergleiche, Qualitäts- und Sicherheitsanalysen sowie Präsentation der belegten Ergebnisse in einem persönlichen Workspace.",
+      "goal": "Produktkern: Ein Benutzer registriert ein GitHub-Main-Repository. ForkRadar erfasst das über die verfügbaren und autorisierten Datenquellen erreichbare Fork-Netzwerk rekursiv, verfolgt Commits und Releases, vergleicht Forks mit ihrem Upstream, führt verfügbare Qualitäts- und Sicherheitsanalysen aus und präsentiert die belegten Ergebnisse in einem professionellen persönlichen Workspace.",
+      "createdAt": "2026-10-29T19:42:48.560Z",
+      "updatedAt": "2026-10-29T19:42:51.646Z",
+      "status": "started",
+      "agents": [
+        {
+          "id": "fork-orchestrator",
+          "name": "Fork Network Orchestrator",
+          "role": "Gesamtkoordination",
+          "mission": "Nimmt registrierte Main-Repositories entgegen, aktiviert autorisierte Datenquellen und koordiniert den rekursiven Fork-Graph-Aufbau mit klaren Aufgabenübergaben.",
+          "skills": [
+            "bkg-task-flow",
+            "bkg-supervisor"
+          ],
+          "model": {
+            "id": "mistralai/mistral-large",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large"
+          },
+          "engineAgentId": "orchestrator",
+          "voice": "Annika",
+          "sessionId": "ses_e76d03f89ffe0vRECH91m8Ztvu",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "fork-researcher",
+          "name": "Fork Graph Researcher",
+          "role": "Netzwerk-Erfassung",
+          "mission": "Erfasst das Fork-Netzwerk rekursiv über autorisierte Quellen, verfolgt Commits und Releases und dokumentiert Upstream-Abgleiche mit belegbaren Metadaten.",
+          "skills": [
+            "bkg-brain-memory",
+            "bkg-labertasche"
+          ],
+          "model": {
+            "id": "deepseek-ai/deepseek-v4.1-flash",
+            "providerID": "nim",
+            "name": "deepseek-ai/deepseek-v4.1-flash"
+          },
+          "engineAgentId": "researcher",
+          "voice": "Jette",
+          "sessionId": "ses_e76d03e41ffeM2ezH74WyyfZiA",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "quality-analyzer",
+          "name": "Quality Security Analyzer",
+          "role": "Analyse",
+          "mission": "Prüft erreichbare Forks auf Qualität und Sicherheit, berechnet Upstream-Vergleiche und erzeugt belegte Analysebefunde mit Nachweisen.",
+          "skills": [
+            "bkg-production-readiness",
+            "bkg-plannotator-review"
+          ],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "builder",
+          "voice": "Josefine",
+          "sessionId": "ses_e76d03cfcffeM7h8hReF0BmT5t",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "workspace-presenter",
+          "name": "Workspace Presenter",
+          "role": "Präsentation",
+          "mission": "Stellt Analysergebnisse in einem professionellen persönlichen Workspace dar und hält Zugriffs- und Datengrenzen aus autorisierten Quellen ein.",
+          "skills": [
+            "bkg-ui-browser-verification",
+            "communication-style"
+          ],
+          "model": {
+            "id": "meta/muse-glimmer-30b",
+            "providerID": "nim",
+            "name": "meta/muse-glimmer-30b"
+          },
+          "engineAgentId": "reviewer",
+          "voice": "Jule",
+          "sessionId": "ses_e76d03bc5ffe4XxfYtfr6Me4eQ",
+          "seenMessageIds": [],
+          "status": "started"
+        }
+      ]
+    },
+    {
+      "id": "bkgteam-mvtyzrql-yzxryox",
+      "name": "ForkRadar Feature Team",
+      "summary": "Präziser Plan für vier Agenten zur Umsetzung von rekursiver Fork-Erkennung, Live-Updates, interaktivem Fork-Graph, Excel-Explorer, Code-Quality, Security Center, Upstream Intelligence, GitHub OAuth, Dashboard, Background Scans, Alerts und Cyberpunk UI mit klaren Rollen, Modellen und Fähigkeiten.",
+      "goal": "# ForkRadar – Features & Goals\n\n- **Recursive Fork Discovery:** Automatische Erfassung ALLER erreichbaren Fork-Ebenen ohne festes Tiefenlimit, inklusive Forks von Forks.\n- **Live Updates:** Neue Commits, Releases, Branches und Repository-Änderungen erkennen.\n- **Fork Graph:** Interaktiver Force-Directed-Graph mit Zoom, Suche, Hover-Details und Navigation.\n- **Excel Explorer:** Sortierbare, filterbare Tabelle mit Datum, Repository, Fork-Tiefe, Kategorie und Relevanzscore; CSV/XLSX-Export.\n- **Code Quality:** Cyclomatic Complexity, Maintainability, Code Smells, Linting und Qualitätsvergleiche.\n- **Security Center:** CVE, GHSA, OSV, verwundbare Dependencies und Sicherheitsregressionen erkennen.\n- **Upstream Intelligence:** Fork-exklusive Features, fehlende Fixes und verbreitete Codeänderungen vergleichen.\n- **GitHub OAuth:** Sichere Anmeldung, Benutzerprofile und getrennte Benutzerdaten.\n- **Personal Dashboard:** Watchlists, gespeicherte Filter, Scan-Konfigurationen und Historie.\n- **Background Scans:** Persistente Jobs, automatische Synchronisierung, Retry und Resume.\n- **Alerts:** Benachrichtigungen für kritische Sicherheitsprobleme und Qualitätsregressionen.\n- **BKG Cyberpunk UI:** Neon-Cyan, Dark Mode, responsive Tabellen und professionelles Dashboard.\n- **Security & Testing:** Isolierte Codeanalyse, sichere Secrets, automatisierte Tests und nachvollziehbare Ergebnisse.",
+      "createdAt": "2026-10-29T20:02:37.485Z",
+      "updatedAt": "2026-10-29T21:15:14.436Z",
+      "status": "started",
+      "agents": [
+        {
+          "id": "fork-discovery-architect",
+          "name": "Fork Discovery Architect",
+          "role": "Systemarchitektur und Datenmodell",
+          "mission": "Rekursive Fork Discovery ohne Tiefenlimit entwerfen, Datenmodell für Fork-Graph definieren, Live-Updates für Commits Releases Branches implementieren und persistente Background Scans mit Retry und Resume planen.",
+          "skills": [
+            "bkg-task-flow",
+            "performance-engineering"
+          ],
+          "model": {
+            "id": "mistralai/mistral-large",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large"
+          },
+          "engineAgentId": "plan",
+          "voice": "Annika",
+          "sessionId": "ses_e76bad0f4ffeQUYSJt1ymkMxtP",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "security-quality-analyst",
+          "name": "Security & Quality Analyst",
+          "role": "Sicherheit und Codequalität",
+          "mission": "Security Center mit CVE GHSA OSV und verwundbaren Dependencies aufbauen, Code Quality Metriken Cyclomatic Complexity Maintainability Code Smells Linting vergleichen und Upstream Intelligence für fork-exklusive Features und fehlende Fixes realisieren.",
+          "skills": [
+            "bkg-production-readiness"
+          ],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "researcher",
+          "voice": "Jette",
+          "sessionId": "ses_e76bacf5cffeI6aYmYwj7cJjmY",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "backend-platform",
+          "name": "Backend Platform Engineer",
+          "role": "Backend Auth und Persistenz",
+          "mission": "GitHub OAuth für sichere Anmeldung und Benutzerprofile umsetzen, Personal Dashboard mit Watchlists gespeicherten Filtern Scan-Konfigurationen und Historie bereitstellen sowie Alerts für Sicherheitsprobleme und Qualitätsregressionen und persistente Hintergrundjobs implementieren.",
+          "skills": [
+            "bkg-brain-memory"
+          ],
+          "model": {
+            "id": "meta/codellama-70b",
+            "providerID": "nim",
+            "name": "meta/codellama-70b"
+          },
+          "engineAgentId": "builder",
+          "voice": "Josefine",
+          "sessionId": "ses_e76bacdf4ffeUFEB31y16v6iHA",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "ui-cyberpunk",
+          "name": "UI Cyberpunk Engineer",
+          "role": "Frontend und Interaktion",
+          "mission": "Interaktiven Force-Directed Fork Graph mit Zoom Suche Hover-Details und Navigation bauen, Excel Explorer mit Sortierung Filter Datum Repository Tiefe Kategorie Relevanzscore und CSV XLSX Export realisieren sowie BKG Cyberpunk UI mit Neon-Cyan Dark Mode und responsivem Dashboard umsetzen.",
+          "skills": [
+            "theme-system",
+            "performance-engineering"
+          ],
+          "model": {
+            "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+            "providerID": "nim",
+            "name": "deepseek-ai/deepseek-coder-6.7b-instruct"
+          },
+          "engineAgentId": "ai-team-dev",
+          "voice": "Jule",
+          "sessionId": "ses_e76bacc80ffeMNa5f3W3NnW8vZ",
+          "seenMessageIds": [],
+          "status": "started"
+        }
+      ]
+    },
+    {
+      "id": "bkgteam-mvu1m6le-ype6e31",
+      "name": "ForkRadar Feature Team",
+      "summary": "Vier Agenten decken Recursive Fork Discovery, Live Updates und Graph, Code Quality und Security, Excel Explorer und Dashboard sowie Auth und Hintergrundbetrieb ab. Fokus auf BKG Cyberpunk UI, sichere Analyse und nachweisbare Ergebnisse.",
+      "goal": "# ForkRadar – Features & Goals\n\n- **Recursive Fork Discovery:** Automatische Erfassung ALLER erreichbaren Fork-Ebenen ohne festes Tiefenlimit, inklusive Forks von Forks.\n- **Live Updates:** Neue Commits, Releases, Branches und Repository-Änderungen erkennen.\n- **Fork Graph:** Interaktiver Force-Directed-Graph mit Zoom, Suche, Hover-Details und Navigation.\n- **Excel Explorer:** Sortierbare, filterbare Tabelle mit Datum, Repository, Fork-Tiefe, Kategorie und Relevanzscore; CSV/XLSX-Export.\n- **Code Quality:** Cyclomatic Complexity, Maintainability, Code Smells, Linting und Qualitätsvergleiche.\n- **Security Center:** CVE, GHSA, OSV, verwundbare Dependencies und Sicherheitsregressionen erkennen.\n- **Upstream Intelligence:** Fork-exklusive Features, fehlende Fixes und verbreitete Codeänderungen vergleichen.\n- **GitHub OAuth:** Sichere Anmeldung, Benutzerprofile und getrennte Benutzerdaten.\n- **Personal Dashboard:** Watchlists, gespeicherte Filter, Scan-Konfigurationen und Historie.\n- **Background Scans:** Persistente Jobs, automatische Synchronisierung, Retry und Resume.\n- **Alerts:** Benachrichtigungen für kritische Sicherheitsprobleme und Qualitätsregressionen.\n- **BKG Cyberpunk UI:** Neon-Cyan, Dark Mode, responsive Tabellen und professionelles Dashboard.\n- **Security & Testing:** Isolierte Codeanalyse, sichere Secrets, automatisierte Tests und nachvollziehbare Ergebnisse.",
+      "createdAt": "2026-10-29T21:16:02.402Z",
+      "updatedAt": "2026-10-29T21:16:21.162Z",
+      "status": "started",
+      "agents": [
+        {
+          "id": "fork-discovery",
+          "name": "Fork Discovery Orchestrator",
+          "role": "Datenakquise und Graph-Aufbau",
+          "mission": "Rekursive Erfassung aller erreichbaren Fork-Ebenen ohne Tiefenlimit, Erkennung von neuen Commits Releases Branches und Repository-Änderungen sowie Vorbereitung der Daten für den interaktiven Force-Directed Fork Graph mit Zoom Suche Hover-Details und Navigation.",
+          "skills": [],
+          "model": {
+            "id": "01-ai/yi-large",
+            "providerID": "nim",
+            "name": "01-ai/yi-large"
+          },
+          "engineAgentId": "researcher",
+          "voice": "Jule",
+          "sessionId": "ses_e767aa7f4ffeuy4dhR7qojozMt",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "code-security-analyzer",
+          "name": "Code Quality and Security Analyst",
+          "role": "Codeanalyse und Sicherheitsbewertung",
+          "mission": "Messung von Cyclomatic Complexity Maintainability Code Smells und Linting, Durchführung von Qualitätsvergleichen, Erkennung von CVE GHSA OSV verwundbaren Dependencies und Sicherheitsregressionen sowie Upstream Intelligence zu fork-exklusiven Features fehlenden Fixes und verbreiteten Codeänderungen.",
+          "skills": [
+            "bkg-production-readiness"
+          ],
+          "model": {
+            "id": "deepseek-ai/deepseek-v4.1-flash",
+            "providerID": "nim",
+            "name": "deepseek-ai/deepseek-v4.1-flash"
+          },
+          "engineAgentId": "builder",
+          "voice": "Annika",
+          "sessionId": "ses_e767aa674ffe3s9k0wSRxw3aDc",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "ui-dashboard-explorer",
+          "name": "UI Dashboard and Explorer",
+          "role": "Frontend und Usability",
+          "mission": "Umsetzung des Excel Explorers mit sortierbarer filterbarer Tabelle Datum Repository Fork-Tiefe Kategorie Relevanzscore und CSV XLSX Export, Personal Dashboard mit Watchlists gespeicherten Filtern Scan-Konfigurationen Historie, BKG Cyberpunk UI Neon-Cyan Dark Mode responsive Tabellen professionelles Dashboard und Alerts für kritische Sicherheitsprobleme und Qualitätsregressionen.",
+          "skills": [
+            "theme-system",
+            "locale-ui-patterns",
+            "drag-to-reorder"
+          ],
+          "model": {
+            "id": "mistralai/mistral-large",
+            "providerID": "nim",
+            "name": "mistralai/mistral-large"
+          },
+          "engineAgentId": "ai-team-producer",
+          "voice": "Jette",
+          "sessionId": "ses_e767aa51dffeoXbu2k3EhkjyX8",
+          "seenMessageIds": [],
+          "status": "started"
+        },
+        {
+          "id": "platform-operations",
+          "name": "Platform and Operations Engineer",
+          "role": "Authentifizierung und Hintergrundbetrieb",
+          "mission": "GitHub OAuth sichere Anmeldung Benutzerprofile getrennte Benutzerdaten, persistente Background Scans mit automatischer Synchronisation Retry und Resume, isolierte Codeanalyse sichere Secrets automatisierte Tests nachvollziehbare Ergebnisse und Einhaltung von Security Testing Gate.",
+          "skills": [
+            "bkg-container-runtime",
+            "isolated-space-boundary",
+            "bkg-git-safe-flow"
+          ],
+          "model": {
+            "id": "nvidia/llama-3.1-nemotron-70b-instruct",
+            "providerID": "nim",
+            "name": "Llama 3.1 Nemotron 70B Instruct"
+          },
+          "engineAgentId": "supervisor",
+          "voice": "Josefine",
+          "sessionId": "ses_e767aa3b2ffepaQYBeyu4KqkRQ",
+          "seenMessageIds": [],
+          "status": "started"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-29T21:16:21.163Z"
+}

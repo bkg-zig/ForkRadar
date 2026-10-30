@@ -1,0 +1,13 @@
+{
+  "last": {
+    "name": "ForkRadar",
+    "slug": "forkradar",
+    "description": "Recursive GitHub Intelligence, Code Quality & Security. Repository currently contains only the master implementation prompt (README.md); no application code, build config, CI or docs exist.",
+    "audit": {
+      "date": "2026-10-29",
+      "agent": "bkg-zero audit subagent",
+      "model": "minimaxai/minimax-m3.1-flash",
+      "scope": "Repository, Git state, docs, README, build/package config, CI, .brain inventory"
+    }
+  }
+}
