@@ -1,6 +1,8 @@
 use chrono::{DateTime, Utc};
 use forkradar_domain::api::{GraphEdge, GraphNode, GraphPayload, ScanJobView};
-use forkradar_domain::model::{JobStatus, RelationshipKind, RelationshipVerification, RepositoryNode};
+use forkradar_domain::model::{
+    JobStatus, RelationshipKind, RelationshipVerification, RepositoryNode,
+};
 use sqlx::Row;
 use uuid::Uuid;
 
@@ -548,8 +550,6 @@ impl PgStore {
             JobStatus::Completed
         } else if failed == total {
             JobStatus::Failed
-        } else if failed > 0 || queued > 0 || running > 0 {
-            JobStatus::Partial
         } else {
             JobStatus::Partial
         };
@@ -770,16 +770,53 @@ impl PgStore {
         .await?;
         Ok(result.rows_affected())
     }
+
+    /// Returns a run only when it belongs to the given user.
+    ///
+    /// The ownership check happens in the database condition, not in the
+    /// application code, so a manipulated run id cannot reach the data of
+    /// another user.
+    pub async fn get_run_for_user(
+        &self,
+        run_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<Option<ScanRunRecord>> {
+        let sql = format!("SELECT {RUN_COLUMNS} FROM scan_runs WHERE id = $1 AND user_id = $2");
+        let row = sqlx::query(&sql)
+            .bind(run_id)
+            .bind(user_id)
+            .fetch_optional(self.pool())
+            .await?;
+        Ok(row.map(run_from_row))
+    }
+
+    /// Puts jobs of a previous process back into the queue.
+    ///
+    /// A job in state `RUNNING` was interrupted by a restart of the server.
+    /// Its checkpoint stays intact, so the job continues at the stored cursor.
+    pub async fn recover_interrupted_jobs(&self) -> Result<u64> {
+        let result = sqlx::query(
+            r#"
+            UPDATE scan_jobs
+            SET status = 'QUEUED', next_retry_at = NULL, updated_at = now()
+            WHERE status = 'RUNNING'
+            "#,
+        )
+        .execute(self.pool())
+        .await?;
+        Ok(result.rows_affected())
+    }
 }
 
 async fn lookup_repository_id(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     full_name: &str,
 ) -> Result<Option<i64>> {
-    let id: Option<i64> = sqlx::query_scalar("SELECT github_id FROM repositories WHERE full_name = $1")
-        .bind(full_name)
-        .fetch_optional(&mut **tx)
-        .await?;
+    let id: Option<i64> =
+        sqlx::query_scalar("SELECT github_id FROM repositories WHERE full_name = $1")
+            .bind(full_name)
+            .fetch_optional(&mut **tx)
+            .await?;
     Ok(id)
 }
 

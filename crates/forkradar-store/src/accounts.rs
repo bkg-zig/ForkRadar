@@ -229,10 +229,12 @@ impl PgStore {
 
     /// Loads the encrypted GitHub access token of a user.
     pub async fn load_github_token(&self, user_id: Uuid) -> Result<Option<(Vec<u8>, Vec<String>)>> {
-        let row = sqlx::query("SELECT encrypted_token, scopes FROM github_connections WHERE user_id = $1")
-            .bind(user_id)
-            .fetch_optional(self.pool())
-            .await?;
+        let row = sqlx::query(
+            "SELECT encrypted_token, scopes FROM github_connections WHERE user_id = $1",
+        )
+        .bind(user_id)
+        .fetch_optional(self.pool())
+        .await?;
 
         Ok(row.map(|row| {
             let encrypted: Vec<u8> = row.get("encrypted_token");

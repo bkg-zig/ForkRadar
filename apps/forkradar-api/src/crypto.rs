@@ -88,7 +88,6 @@ impl TokenCipher {
 
 /// Computes the PKCE challenge of a verifier.
 pub fn pkce_challenge(verifier: &str) -> String {
-    use base64::engine::general_purpose::URL_SAFE_NO_PAD as Engine;
     let digest = Sha256::digest(verifier.as_bytes());
     URL_SAFE_NO_PAD.encode(digest)
 }

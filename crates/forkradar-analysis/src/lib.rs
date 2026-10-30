@@ -3,165 +3,49 @@
 //! The crate detects the analysis tools of the runtime and computes quality
 //! scores from measured values. A tool that is not installed never produces a
 //! measurement. The score stays `NOT_RUN` until a real tool delivered values.
+//!
+//! The data model of the quality area lives in `forkradar-domain`, because the
+//! web client renders the same values without running a tool.
 
 use std::path::PathBuf;
 use std::time::Duration;
 
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+use chrono::Utc;
 
-/// Description of one analysis tool of the runtime.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ToolDescriptor {
-    pub id: String,
-    pub name: String,
-    /// Language the tool analyses.
-    pub language: String,
-    /// Executable that has to be on the path.
-    pub executable: String,
-    pub installed: bool,
-    pub path: Option<String>,
-    /// Version string of the tool. `None` when the tool did not answer.
-    pub version: Option<String>,
-}
+// The quality model lives in `forkradar-domain`. This crate re-exports it, so
+// every type that the public functions of this crate return or accept stays
+// nameable through this crate.
+pub use forkradar_domain::quality::{
+    compute_score, QualityScore, ScoreComponent, ToolDescriptor, ToolInventory, FORMAT_DESCRIPTION,
+};
 
-/// Result of the tool detection.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ToolInventory {
-    pub tools: Vec<ToolDescriptor>,
-    pub detected_at: DateTime<Utc>,
-}
-
-impl ToolInventory {
-    /// Detects the tools of the current runtime.
-    ///
-    /// The detection reads the path and asks every found tool for its version.
-    /// No repository code is executed.
-    pub async fn detect() -> Self {
-        let known = known_tools();
-        let mut tools = Vec::with_capacity(known.len());
-        for (id, name, language, executable) in known {
-            let path = find_on_path(&executable);
-            let version = match &path {
-                Some(path) => probe_version(path).await,
-                None => None,
-            };
-            tools.push(ToolDescriptor {
-                id,
-                name,
-                language: language.to_string(),
-                executable: executable.to_string(),
-                installed: path.is_some(),
-                path: path.map(|path| path.to_string_lossy().to_string()),
-                version,
-            });
-        }
-        Self {
-            tools,
-            detected_at: Utc::now(),
-        }
-    }
-
-    /// Tools that are not installed.
-    pub fn missing(&self) -> Vec<&ToolDescriptor> {
-        self.tools
-            .iter()
-            .filter(|tool| !tool.installed)
-            .collect()
-    }
-}
-
-/// One component of a quality score.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ScoreComponent {
-    pub id: String,
-    pub label: String,
-    /// Measured value between 0 and 100. `None` means the metric is `N/A`.
-    pub value: Option<f64>,
-    /// Weight of the component inside the total.
-    pub weight: f64,
-    /// Tool and configuration that produced the value.
-    pub source: String,
-}
-
-/// Quality score of a repository revision.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct QualityScore {
-    /// `READY` when at least one component carries a measured value.
-    pub state: String,
-    /// Weighted average of the available components. `None` without any value.
-    pub total: Option<f64>,
-    pub components: Vec<ScoreComponent>,
-    /// Description of the formula, shown in the interface.
-    pub formula: String,
-}
-
-impl QualityScore {
-    /// Builds a score that carries no measurement.
-    pub fn not_run(reason: impl Into<String>) -> Self {
-        Self {
-            state: "NOT_RUN".to_string(),
-            total: None,
-            components: Vec::new(),
-            formula: FORMAT_DESCRIPTION.to_string(),
-        }
-        .with_reason(reason)
-    }
-
-    fn with_reason(mut self, reason: impl Into<String>) -> Self {
-        self.components = vec![ScoreComponent {
-            id: "status".to_string(),
-            label: reason.into(),
-            value: None,
-            weight: 0.0,
-            source: "forkradar-analysis".to_string(),
-        }];
-        self
-    }
-}
-
-/// Description of the score formula.
-pub const FORMAT_DESCRIPTION: &str =
-    "The total is the weighted average of all components with a measured value. \
-     Components without a measurement are reported as N/A and do not influence the total.";
-
-/// Computes the weighted average of the available components.
+/// Detects the tools of the current runtime.
 ///
-/// Components without a value are reported as `N/A`. They are excluded from
-/// the total, so a missing measurement never becomes a zero or a hundred.
-pub fn compute_score(components: &[ScoreComponent]) -> QualityScore {
-    let mut weighted_sum = 0.0;
-    let mut weight_sum = 0.0;
-    for component in components {
-        let Some(value) = component.value else {
-            continue;
+/// The detection reads the path and asks every found tool for its version.
+/// No repository code is executed.
+pub async fn detect_tools() -> ToolInventory {
+    let known = known_tools();
+    let mut tools = Vec::with_capacity(known.len());
+    for (id, name, language, executable) in known {
+        let path = find_on_path(&executable);
+        let version = match &path {
+            Some(path) => probe_version(path).await,
+            None => None,
         };
-        if component.weight <= 0.0 {
-            continue;
-        }
-        weighted_sum += value * component.weight;
-        weight_sum += component.weight;
+        tools.push(ToolDescriptor {
+            id: id.to_string(),
+            name: name.to_string(),
+            language: language.to_string(),
+            executable: executable.to_string(),
+            installed: path.is_some(),
+            path: path.map(|path| path.to_string_lossy().to_string()),
+            version,
+        });
     }
-
-    if weight_sum == 0.0 {
-        return QualityScore {
-            state: "NOT_RUN".to_string(),
-            total: None,
-            components: components.to_vec(),
-            formula: FORMAT_DESCRIPTION.to_string(),
-        };
+    ToolInventory {
+        tools,
+        detected_at: Utc::now(),
     }
-
-    QualityScore {
-        state: "READY".to_string(),
-        total: Some(round_two(weighted_sum / weight_sum)),
-        components: components.to_vec(),
-        formula: FORMAT_DESCRIPTION.to_string(),
-    }
-}
-
-fn round_two(value: f64) -> f64 {
-    (value * 100.0).round() / 100.0
 }
 
 /// The tools that ForkRadar knows.
@@ -218,9 +102,18 @@ async fn probe_version(path: &PathBuf) -> Option<String> {
     }
 }
 
+/// The score of a repository that no tool measured yet.
+pub fn score_not_run(reason: impl Into<String>) -> QualityScore {
+    QualityScore::not_run(reason)
+}
+
+/// One component of a quality score.
+pub type Component = ScoreComponent;
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use forkradar_domain::quality::ScoreComponent;
 
     fn component(id: &str, value: Option<f64>, weight: f64) -> ScoreComponent {
         ScoreComponent {
@@ -268,5 +161,13 @@ mod tests {
         let first = compute_score(&components);
         let second = compute_score(&components);
         assert_eq!(first, second);
+    }
+
+    #[test]
+    fn score_not_run_has_no_total() {
+        let score = score_not_run("No tool measured the revision.");
+        assert_eq!(score.state, "NOT_RUN");
+        assert_eq!(score.total, None);
+        assert_eq!(score.components.len(), 1);
     }
 }

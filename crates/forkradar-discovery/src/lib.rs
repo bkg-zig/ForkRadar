@@ -60,7 +60,11 @@ pub struct DiscoveryEngine {
 }
 
 impl DiscoveryEngine {
-    pub fn new(store: PgStore, github_base_url: impl Into<String>, config: DiscoveryConfig) -> Self {
+    pub fn new(
+        store: PgStore,
+        github_base_url: impl Into<String>,
+        config: DiscoveryConfig,
+    ) -> Self {
         Self {
             store,
             github_base_url: github_base_url.into(),
@@ -77,9 +81,7 @@ impl DiscoveryEngine {
     ) -> Result<Uuid, DiscoveryError> {
         self.store.upsert_repository(root).await?;
         let run_id = self.store.create_run(user_id, root.id, max_depth).await?;
-        self.store
-            .insert_root_repository(run_id, root.id)
-            .await?;
+        self.store.insert_root_repository(run_id, root.id).await?;
         self.store.enqueue_job(run_id, root.id, 0).await?;
         Ok(run_id)
     }
@@ -135,7 +137,10 @@ impl DiscoveryEngine {
         let mut pages_this_round = 0_u32;
 
         loop {
-            match client.list_forks(&repo.owner, &repo.name, page, self.config.per_page).await {
+            match client
+                .list_forks(&repo.owner, &repo.name, page, self.config.per_page)
+                .await
+            {
                 Ok(fork_page) => {
                     self.store
                         .record_page(
@@ -214,13 +219,14 @@ impl DiscoveryEngine {
             ..
         } = error
         {
-            if reset_at > Utc::now() {
-                return Some(reset_at);
+            if *reset_at > Utc::now() {
+                return Some(*reset_at);
             }
         }
         let exponent = (job.attempt_count - 1).clamp(0, 10) as u32;
         let multiplier = 2_i64.pow(exponent);
-        let base = Duration::milliseconds(self.config.retry_base_delay.num_milliseconds() * multiplier);
+        let base =
+            Duration::milliseconds(self.config.retry_base_delay.num_milliseconds() * multiplier);
         let capped = base.min(self.config.retry_max_delay);
         let jitter_seconds = rand::thread_rng().gen_range(0..=(capped.num_seconds() / 5).max(1));
         Some(Utc::now() + capped + Duration::seconds(jitter_seconds))

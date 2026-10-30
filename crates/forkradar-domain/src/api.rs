@@ -1,5 +1,6 @@
-use chrono::{DateTime, Utc};
+use crate::features::ScoreBreakdown;
 use crate::model::{GithubId, JobStatus, RelationshipKind, RelationshipVerification};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -13,18 +14,28 @@ pub struct FeatureStatus {
 }
 
 impl FeatureStatus {
-    pub fn ready(message: impl Into<String>) -> Self {
+    /// Builds a status with an explicit state.
+    pub fn new(state: impl Into<String>, message: impl Into<String>) -> Self {
         Self {
-            state: "READY".to_string(),
+            state: state.into(),
             message: message.into(),
         }
     }
 
+    pub fn ready(message: impl Into<String>) -> Self {
+        Self::new("READY", message)
+    }
+
     pub fn not_configured(message: impl Into<String>) -> Self {
-        Self {
-            state: "NOT_CONFIGURED".to_string(),
-            message: message.into(),
-        }
+        Self::new("NOT_CONFIGURED", message)
+    }
+
+    pub fn blocked(message: impl Into<String>) -> Self {
+        Self::new("BLOCKED", message)
+    }
+
+    pub fn not_run(message: impl Into<String>) -> Self {
+        Self::new("NOT_RUN", message)
     }
 }
 
@@ -211,6 +222,144 @@ pub struct CreateScanRequest {
 pub struct AddRepositoryRequest {
     /// `owner/name` of the repository.
     pub repository: String,
+}
+
+/// One page of the repositories discovered by a scan run.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DiscoveredRepositoryPage {
+    pub run_id: Uuid,
+    pub items: Vec<DiscoveredRepository>,
+    /// Total number of discovered repositories of the run.
+    pub total: i64,
+    pub offset: i64,
+    pub limit: i64,
+}
+
+/// Personal dashboard summary.
+///
+/// Every number is derived from the stored data of the user. Areas that are
+/// not collected yet are reported as `NOT_RUN` in the frontend and do not
+/// appear as a measured value here.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct OverviewSummary {
+    pub watched_repository_count: i64,
+    /// Repositories found by the scans of the user.
+    pub discovered_repository_count: i64,
+    /// Number of distinct fork generations, counted from the depth of the runs.
+    pub fork_generation_count: i32,
+    /// Highest depth that was reached, without a limit of the scope.
+    pub max_reached_depth: i32,
+    pub run_count: i64,
+    pub completed_run_count: i64,
+    pub running_run_count: i64,
+    pub failed_run_count: i64,
+    pub partial_run_count: i64,
+    pub open_job_count: i64,
+    pub failed_job_count: i64,
+    pub last_success_at: Option<DateTime<Utc>>,
+    pub generated_at: DateTime<Utc>,
+}
+
+/// A feature suggestion as the API returns it.
+///
+/// The score and its breakdown are calculated on the server. The frontend
+/// only renders them, so every client shows the same number.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct FeatureSuggestion {
+    pub id: Uuid,
+    pub title: String,
+    pub description: String,
+    pub area: String,
+    /// Expected benefit between one and ten.
+    pub impact: i32,
+    /// Expected effort between one and ten.
+    pub effort: i32,
+    /// Lifecycle code such as `PROPOSED`.
+    pub status: String,
+    /// German label of the lifecycle state.
+    pub status_label: String,
+    /// Number of users that voted for this suggestion.
+    pub votes: i64,
+    /// Whether the current user voted for this suggestion.
+    pub voted_by_me: bool,
+    /// Relation of impact and effort.
+    pub roi: f64,
+    /// Ranking score between zero and one hundred.
+    pub score: f64,
+    /// Points of every factor of the ranking score.
+    pub breakdown: ScoreBreakdown,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// Payload for creating a feature suggestion.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CreateFeatureRequest {
+    pub title: String,
+    #[serde(default)]
+    pub description: String,
+    #[serde(default)]
+    pub area: String,
+    /// Benefit between one and ten.
+    pub impact: i32,
+    /// Effort between one and ten.
+    pub effort: i32,
+}
+
+/// Payload for changing the lifecycle state of a suggestion.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct UpdateFeatureStatusRequest {
+    /// New lifecycle code such as `PLANNED`.
+    pub status: String,
+}
+
+/// Query parameters of the feature list.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FeatureListQuery {
+    /// Sort mode, see `FeatureSort`.
+    #[serde(default)]
+    pub sort: Option<String>,
+    /// Free text search over title, description and area.
+    #[serde(default)]
+    pub q: Option<String>,
+    /// Restrict the result to one area.
+    #[serde(default)]
+    pub area: Option<String>,
+    /// Restrict the result to one lifecycle state.
+    #[serde(default)]
+    pub status: Option<String>,
+    /// Lowest accepted impact.
+    #[serde(default)]
+    pub min_impact: Option<i32>,
+    /// Highest accepted effort.
+    #[serde(default)]
+    pub max_effort: Option<i32>,
+    /// Lowest accepted number of votes.
+    #[serde(default)]
+    pub min_votes: Option<i64>,
+}
+
+/// One day of the audit chart.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FeatureAuditDay {
+    /// Date in `YYYY-MM-DD` format.
+    pub date: String,
+    pub created: i64,
+    pub votes: i64,
+    pub status_changes: i64,
+}
+
+/// Audit summary of the feature area over the last thirty days.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FeatureAuditSummary {
+    /// Number of days covered by the summary.
+    pub days: i32,
+    pub total_created: i64,
+    pub total_votes: i64,
+    pub total_status_changes: i64,
+    /// One entry per day, oldest first.
+    pub timeline: Vec<FeatureAuditDay>,
+    pub generated_at: DateTime<Utc>,
 }
 
 /// Error body returned for every failed request.

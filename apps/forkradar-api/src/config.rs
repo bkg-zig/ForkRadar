@@ -64,21 +64,16 @@ impl Config {
             optional("GITHUB_OAUTH_CLIENT_SECRET"),
             optional("GITHUB_OAUTH_CALLBACK_URL"),
         ) {
-            (Some(client_id), Some(client_secret), Some(callback_url)) => {
-                Some(GithubOAuthConfig {
-                    client_id,
-                    client_secret,
-                    callback_url,
-                    authorize_url: optional("GITHUB_OAUTH_AUTHORIZE_URL")
-                        .unwrap_or_else(|| DEFAULT_GITHUB_AUTHORIZE_URL.to_string()),
-                    token_url: optional("GITHUB_OAUTH_TOKEN_URL")
-                        .unwrap_or_else(|| DEFAULT_GITHUB_TOKEN_URL.to_string()),
-                    user_url: format!(
-                        "{}/user",
-                        github_api_base_url.trim_end_matches('/')
-                    ),
-                })
-            }
+            (Some(client_id), Some(client_secret), Some(callback_url)) => Some(GithubOAuthConfig {
+                client_id,
+                client_secret,
+                callback_url,
+                authorize_url: optional("GITHUB_OAUTH_AUTHORIZE_URL")
+                    .unwrap_or_else(|| DEFAULT_GITHUB_AUTHORIZE_URL.to_string()),
+                token_url: optional("GITHUB_OAUTH_TOKEN_URL")
+                    .unwrap_or_else(|| DEFAULT_GITHUB_TOKEN_URL.to_string()),
+                user_url: format!("{}/user", github_api_base_url.trim_end_matches('/')),
+            }),
             _ => None,
         };
 

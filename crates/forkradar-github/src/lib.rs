@@ -8,7 +8,7 @@ use url::Url;
 
 mod wire;
 
-pub use wire::{ForkPage, GitHubRepository, RateLimitResponse, RateLimitResource, RateLimitState};
+pub use wire::{ForkPage, GitHubRepository, RateLimitResource, RateLimitResponse, RateLimitState};
 
 /// Errors returned by the GitHub client.
 #[derive(Debug, thiserror::Error)]
@@ -95,8 +95,9 @@ pub struct GitHubClient {
 
 impl GitHubClient {
     pub fn new(base_url: &str, token: Option<String>) -> Result<Self, GitHubError> {
-        let base_url = Url::parse(base_url)
-            .map_err(|err| GitHubError::InvalidResponse(format!("invalid github base url: {err}")))?;
+        let base_url = Url::parse(base_url).map_err(|err| {
+            GitHubError::InvalidResponse(format!("invalid github base url: {err}"))
+        })?;
         let http = reqwest::Client::builder()
             .timeout(Duration::from_secs(30))
             .connect_timeout(Duration::from_secs(10))
@@ -130,11 +131,7 @@ impl GitHubClient {
     }
 
     /// Fetches the metadata of one repository.
-    pub async fn repository(
-        &self,
-        owner: &str,
-        name: &str,
-    ) -> Result<RepositoryNode, GitHubError> {
+    pub async fn repository(&self, owner: &str, name: &str) -> Result<RepositoryNode, GitHubError> {
         let url = self
             .base_url
             .join(&format!("repos/{owner}/{name}"))
@@ -160,11 +157,10 @@ impl GitHubClient {
             .join(&format!("repos/{owner}/{name}/forks"))
             .map_err(|err| GitHubError::InvalidResponse(err.to_string()))?;
         let response = self
-            .send(
-                self.http
-                    .get(url)
-                    .query(&[("page", page.to_string()), ("per_page", per_page.to_string())]),
-            )
+            .send(self.http.get(url).query(&[
+                ("page", page.to_string()),
+                ("per_page", per_page.to_string()),
+            ]))
             .await?;
         let next_page = response
             .headers()
@@ -206,7 +202,10 @@ impl GitHubClient {
         request: reqwest::RequestBuilder,
     ) -> Result<reqwest::Response, GitHubError> {
         let mut headers = HeaderMap::new();
-        headers.insert(ACCEPT, HeaderValue::from_static("application/vnd.github+json"));
+        headers.insert(
+            ACCEPT,
+            HeaderValue::from_static("application/vnd.github+json"),
+        );
         headers.insert(
             "x-github-api-version",
             HeaderValue::from_static("2022-11-28"),
@@ -227,11 +226,7 @@ impl GitHubClient {
         Err(self.map_error(status, response).await)
     }
 
-    async fn map_error(
-        &self,
-        status: StatusCode,
-        response: reqwest::Response,
-    ) -> GitHubError {
+    async fn map_error(&self, status: StatusCode, response: reqwest::Response) -> GitHubError {
         let headers = response.headers().clone();
         let body = response
             .text()

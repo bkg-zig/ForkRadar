@@ -85,14 +85,19 @@ pub fn spawn(state: AppState) -> tokio::task::JoinHandle<()> {
             match state.store.list_open_runs().await {
                 Ok(runs) => {
                     for run in runs {
-                        let mut guard = match in_flight.lock() {
-                            Ok(guard) => guard,
-                            Err(_) => break,
+                        // The lock is released before the worker waits for a
+                        // permit. A standard mutex guard may not live across
+                        // an await point.
+                        let claimed = {
+                            let mut guard = match in_flight.lock() {
+                                Ok(guard) => guard,
+                                Err(_) => break,
+                            };
+                            guard.insert(run.id)
                         };
-                        if !guard.insert(run.id) {
+                        if !claimed {
                             continue;
                         }
-                        drop(guard);
 
                         let permit = match semaphore.clone().acquire_owned().await {
                             Ok(permit) => permit,

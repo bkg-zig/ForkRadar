@@ -96,11 +96,15 @@ impl From<forkradar_github::GitHubError> for ApiError {
                 StatusCode::TOO_MANY_REQUESTS,
                 "GITHUB_RATE_LIMITED",
                 match reset_at {
-                    Some(reset_at) => format!("The GitHub rate limit is reached. It resets at {reset_at}."),
+                    Some(reset_at) => {
+                        format!("The GitHub rate limit is reached. It resets at {reset_at}.")
+                    }
                     None => "The GitHub rate limit is reached.".to_string(),
                 },
             ),
-            GitHubError::Transport(cause) => ApiError::internal_from("GITHUB_TRANSPORT_ERROR", cause),
+            GitHubError::Transport(cause) => {
+                ApiError::internal_from("GITHUB_TRANSPORT_ERROR", cause)
+            }
             GitHubError::InvalidResponse(message) => {
                 ApiError::internal_from("GITHUB_INVALID_RESPONSE", message)
             }
@@ -121,9 +125,10 @@ impl From<forkradar_discovery::DiscoveryError> for ApiError {
             forkradar_discovery::DiscoveryError::RunNotFound(_) => {
                 ApiError::not_found("SCAN_NOT_FOUND", "The scan run does not exist.")
             }
-            forkradar_discovery::DiscoveryError::RepositoryNotFound(_) => {
-                ApiError::not_found("REPOSITORY_NOT_FOUND", "The repository metadata is missing.")
-            }
+            forkradar_discovery::DiscoveryError::RepositoryNotFound(_) => ApiError::not_found(
+                "REPOSITORY_NOT_FOUND",
+                "The repository metadata is missing.",
+            ),
         }
     }
 }

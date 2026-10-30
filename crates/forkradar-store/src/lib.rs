@@ -5,10 +5,13 @@
 //! the user id of the authenticated session.
 
 pub mod accounts;
+pub mod features;
+pub mod overview;
 pub mod repos;
 pub mod scans;
 
 pub use accounts::{OAuthState, SessionUser};
+pub use features::{FeatureFilter, FeatureSuggestionRecord};
 pub use repos::WatchedRepositoryRecord;
 pub use scans::{ScanJob, ScanRunRecord};
 

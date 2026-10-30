@@ -233,13 +233,36 @@ impl PgStore {
 
     /// Counts the repositories discovered by a run.
     pub async fn count_scan_repositories(&self, run_id: Uuid) -> Result<i64> {
-        let count: i64 = sqlx::query_scalar(
-            "SELECT count(*) FROM scan_repositories WHERE run_id = $1",
+        let count: i64 =
+            sqlx::query_scalar("SELECT count(*) FROM scan_repositories WHERE run_id = $1")
+                .bind(run_id)
+                .fetch_one(self.pool())
+                .await?;
+        Ok(count)
+    }
+
+    /// Checks whether the repository is known to the user.
+    ///
+    /// The repository counts as known when it sits on the watchlist of the
+    /// user or when one of the runs of the user discovered it.
+    pub async fn user_knows_repository(&self, user_id: Uuid, github_id: i64) -> Result<bool> {
+        let known: bool = sqlx::query_scalar(
+            r#"
+            SELECT EXISTS(
+                SELECT 1 FROM watched_repositories
+                WHERE user_id = $1 AND github_id = $2
+            ) OR EXISTS(
+                SELECT 1 FROM scan_repositories s
+                JOIN scan_runs r ON r.id = s.run_id
+                WHERE r.user_id = $1 AND s.github_id = $2
+            )
+            "#,
         )
-        .bind(run_id)
+        .bind(user_id)
+        .bind(github_id)
         .fetch_one(self.pool())
         .await?;
-        Ok(count)
+        Ok(known)
     }
 }
 

@@ -13,7 +13,6 @@ use axum_extra::extract::cookie::{Cookie, CookieJar, SameSite};
 use chrono::Duration;
 use forkradar_domain::api::SessionUser;
 use serde::Deserialize;
-use uuid::Uuid;
 
 use crate::config::GithubOAuthConfig;
 use crate::crypto::{hash_token, pkce_challenge, random_token};
@@ -69,10 +68,10 @@ pub async fn start(State(state): State<AppState>) -> Result<Response, ApiError> 
     let oauth = oauth_config(&state)?;
     require_cipher(&state)?;
 
-    let state_value = random_token()
-        .map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
-    let verifier = random_token()
-        .map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
+    let state_value =
+        random_token().map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
+    let verifier =
+        random_token().map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
     let challenge = pkce_challenge(&verifier);
 
     state
@@ -156,8 +155,8 @@ pub async fn callback(
             )
         })?;
 
-    let token = exchange_code(&oauth, &code, &stored_state.code_verifier).await?;
-    let profile = fetch_user(&oauth, &token.access_token).await?;
+    let token = exchange_code(oauth, &code, &stored_state.code_verifier).await?;
+    let profile = fetch_user(oauth, &token.access_token).await?;
 
     let user = state
         .store
@@ -185,8 +184,8 @@ pub async fn callback(
         .await
         .map_err(|error| ApiError::internal_from("DATABASE_ERROR", error))?;
 
-    let session_token = random_token()
-        .map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
+    let session_token =
+        random_token().map_err(|error| ApiError::internal_from("RANDOMNESS_UNAVAILABLE", error))?;
     let ttl = Duration::hours(state.config.session_ttl_hours);
     state
         .store
@@ -210,7 +209,7 @@ pub async fn callback(
         .http_only(true)
         .secure(state.config.cookie_secure)
         .same_site(SameSite::Lax)
-        .max_age(ttl)
+        .max_age(time::Duration::seconds(ttl.num_seconds()))
         .build();
 
     let mut headers = HeaderMap::new();
@@ -225,10 +224,7 @@ pub async fn callback(
 }
 
 /// Deletes the session of the browser.
-pub async fn logout(
-    State(state): State<AppState>,
-    jar: CookieJar,
-) -> Result<Response, ApiError> {
+pub async fn logout(State(state): State<AppState>, jar: CookieJar) -> Result<Response, ApiError> {
     if let Some(cookie) = jar.get(SESSION_COOKIE) {
         let removed = state
             .store
@@ -244,13 +240,16 @@ pub async fn logout(
         .http_only(true)
         .secure(state.config.cookie_secure)
         .same_site(SameSite::Lax)
-        .max_age(Duration::zero())
+        .max_age(time::Duration::ZERO)
         .build();
     Ok((jar.remove(cookie), StatusCode::NO_CONTENT).into_response())
 }
 
 /// Returns the user of the current session.
-pub async fn session(State(state): State<AppState>, user: AuthUser) -> Result<Json<SessionUser>, ApiError> {
+pub async fn session(
+    State(state): State<AppState>,
+    user: AuthUser,
+) -> Result<Json<SessionUser>, ApiError> {
     let scopes = state
         .store
         .github_scopes(user.session.user_id)
@@ -263,6 +262,46 @@ pub async fn session(State(state): State<AppState>, user: AuthUser) -> Result<Js
         login: user.session.login.clone(),
         avatar_url: user.session.avatar_url.clone(),
         scopes,
+    }))
+}
+
+/// State of the login of the browser.
+///
+/// The frontend needs this answer before it shows a protected area. It never
+/// fails when no session exists, because "not signed in" is a normal state.
+#[derive(Debug, serde::Serialize)]
+pub struct SessionState {
+    pub authenticated: bool,
+    pub user: Option<SessionUser>,
+}
+
+/// Reports whether the browser holds a valid session.
+pub async fn state(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Json<SessionState>, ApiError> {
+    let Some(session) = optional_session(&state, &headers).await? else {
+        return Ok(Json(SessionState {
+            authenticated: false,
+            user: None,
+        }));
+    };
+
+    let scopes = state
+        .store
+        .github_scopes(session.user_id)
+        .await
+        .map_err(|error| ApiError::internal_from("DATABASE_ERROR", error))?;
+
+    Ok(Json(SessionState {
+        authenticated: true,
+        user: Some(SessionUser {
+            id: session.user_id,
+            github_id: session.github_id,
+            login: session.login.clone(),
+            avatar_url: session.avatar_url.clone(),
+            scopes,
+        }),
     }))
 }
 
@@ -304,12 +343,19 @@ struct TokenExchange {
     error_description: Option<String>,
 }
 
+/// A token that the exchange endpoint confirmed.
+#[derive(Debug)]
+struct GithubToken {
+    access_token: String,
+    scope: String,
+}
+
 /// Exchanges the authorization code for an access token.
 async fn exchange_code(
     oauth: &GithubOAuthConfig,
     code: &str,
     verifier: &str,
-) -> Result<TokenExchange, ApiError> {
+) -> Result<GithubToken, ApiError> {
     let http = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(20))
         .build()
@@ -370,7 +416,10 @@ async fn exchange_code(
         ));
     }
 
-    Ok(parsed)
+    Ok(GithubToken {
+        access_token: parsed.access_token.unwrap_or_default(),
+        scope: parsed.scope.unwrap_or_default(),
+    })
 }
 
 /// Reads the answer of the token endpoint. GitHub answers as JSON or as form.
@@ -434,29 +483,31 @@ async fn fetch_user(oauth: &GithubOAuthConfig, token: &str) -> Result<GithubProf
         ));
     }
 
-    response
-        .json::<GithubProfile>()
-        .await
-        .map_err(|error| ApiError::new(
+    response.json::<GithubProfile>().await.map_err(|error| {
+        ApiError::new(
             StatusCode::BAD_GATEWAY,
             "GITHUB_PROFILE_INVALID",
             format!("GitHub returned a profile that could not be read: {error}"),
-        ))
+        )
+    })
 }
 
-/// Returns the user id of an optional session.
-pub async fn optional_user(
+/// Returns the session of the browser, when the cookie carries a valid one.
+pub async fn optional_session(
     state: &AppState,
     headers: &HeaderMap,
-) -> Result<Option<Uuid>, ApiError> {
+) -> Result<Option<forkradar_store::SessionUser>, ApiError> {
     let jar = CookieJar::from_headers(headers);
-    let Some(cookie) = jar.get(SESSION_COOKIE) else {
+    let Some(token) = jar
+        .get(SESSION_COOKIE)
+        .map(|cookie| cookie.value().to_string())
+    else {
         return Ok(None);
     };
     let session = state
         .store
-        .find_session(&hash_token(cookie.value()))
+        .find_session(&hash_token(&token))
         .await
         .map_err(|error| ApiError::internal_from("DATABASE_ERROR", error))?;
-    Ok(session.map(|session| session.user_id))
+    Ok(session)
 }

@@ -199,7 +199,9 @@ impl NimClient {
             .bearer_auth(self.api_key()?)
             .send()
             .await
-            .map_err(|err| NimError::Unreachable(redact(&err.to_string(), self.config.api_key.as_deref())))?;
+            .map_err(|err| {
+                NimError::Unreachable(redact(&err.to_string(), self.config.api_key.as_deref()))
+            })?;
         let status = response.status();
         if status == reqwest::StatusCode::UNAUTHORIZED {
             return Err(NimError::Unauthorized);
@@ -231,11 +233,7 @@ impl NimClient {
         system: &str,
         user_content: &str,
     ) -> Result<T, NimError> {
-        let model = self
-            .config
-            .model
-            .clone()
-            .ok_or(NimError::NotConfigured)?;
+        let model = self.config.model.clone().ok_or(NimError::NotConfigured)?;
         let url = format!(
             "{}/chat/completions",
             self.config.base_url.trim_end_matches('/')
@@ -264,7 +262,9 @@ impl NimClient {
             .json(&request)
             .send()
             .await
-            .map_err(|err| NimError::Unreachable(redact(&err.to_string(), self.config.api_key.as_deref())))?;
+            .map_err(|err| {
+                NimError::Unreachable(redact(&err.to_string(), self.config.api_key.as_deref()))
+            })?;
         let status = response.status();
         if status == reqwest::StatusCode::UNAUTHORIZED {
             return Err(NimError::Unauthorized);
@@ -286,8 +286,7 @@ impl NimClient {
             .next()
             .map(|choice| choice.message.content)
             .unwrap_or_default();
-        serde_json::from_str::<T>(&content)
-            .map_err(|err| NimError::SchemaMismatch(err.to_string()))
+        serde_json::from_str::<T>(&content).map_err(|err| NimError::SchemaMismatch(err.to_string()))
     }
 
     fn api_key(&self) -> Result<&str, NimError> {
